@@ -1,8 +1,8 @@
 import { Scenario } from "../scenario";
 
-export const warped = (): Scenario => {
+export const rsvFidanza = (): Scenario => {
   const scenario: Scenario = {
-    id: "WARPED",
+    id: "RSV FIDANZA",
     name: "RSV FIDANZA",
     type: "ship",
     crew: { current: 0, capacity: 16 }, // All crew status unknown/transformed

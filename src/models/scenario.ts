@@ -4,7 +4,7 @@ import type { PointOfInterest } from "./poi";
 import { bellStation, deepStation } from "./scenarios/deep";
 import { gretaBase } from "./scenarios/greta-base";
 import { prosperosDream } from "./scenarios/prosperos-dream";
-import { warped } from "./scenarios/warped";
+import { rsvFidanza } from "./scenarios/rsv-fidanza";
 import { ypsilon14, ypsilon14WithTunnels } from "./scenarios/ypsilon-14";
 import { RoomId, StationGraphMap } from "./station-graph-map";
 
@@ -64,7 +64,7 @@ export const allScenarios = [
   bellStation(),
   deepStation(),
   prosperosDream(),
-  warped(),
+  rsvFidanza(),
 ];
 
 export type SystemLog = {
