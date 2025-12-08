@@ -22,8 +22,6 @@ import {
 } from "lucide-react";
 import { DateTime } from "luxon";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ImageSelector } from "./images/image-selector";
 import { Button } from "./ui/button";
 
 const tableIcons = {
@@ -50,20 +48,6 @@ export function Header() {
   const params = useParams();
   const currentTime = DateTime.now().plus({ year: 100 });
   const mapId = params.mapId as string;
-  const [isImageSelectorOpen, setIsImageSelectorOpen] = useState(false);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Check for Cmd+K (Mac) or Ctrl+K (Windows/Linux)
-      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
-        event.preventDefault();
-        setIsImageSelectorOpen((prev) => !prev);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
 
   const handleViewChange = (view: ViewType) => {
     setCurrentView(view);
@@ -75,7 +59,6 @@ export function Header() {
     "exterior",
     map ? "interior" : null,
     scenario.asciiMap ? "interior-ascii" : null,
-    scenario.showPcView ? "pcs" : null,
   ].filter(Boolean) as ViewType[];
 
   return (
@@ -107,12 +90,7 @@ export function Header() {
           <div className="text-sm md:text-base font-mono">
             <p className="flex justify-between">
               <span>CREW:&nbsp;</span>
-              <button
-                onClick={() => setIsImageSelectorOpen(true)}
-                className="hover:text-primary transition-colors"
-              >
-                {scenario.crew.current}/{scenario.crew.capacity}
-              </button>
+              {scenario.crew.current}/{scenario.crew.capacity}
             </p>
             <p className="flex justify-between">
               <span>DATE:&nbsp;</span>
@@ -163,10 +141,6 @@ export function Header() {
           )}
         </div>
       </div>
-      <ImageSelector
-        isOpen={isImageSelectorOpen}
-        onClose={() => setIsImageSelectorOpen(false)}
-      />
     </header>
   );
 }

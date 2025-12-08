@@ -1,66 +1,7 @@
-import { Image } from "../image";
 import { Scenario, StationMap } from "../scenario";
 
 // Scenario definitions
 export const ypsilon14 = (): Scenario => {
-  const images: Image[] = [
-    {
-      title: "Mike",
-      path: "/imgs/mike.png",
-      description: "Head of mining operations on Ypsilon 14",
-    },
-    {
-      title: "Sonya",
-      path: "/imgs/sonya.png",
-      description: "Assistant manager on Ypsilon 14",
-    },
-    {
-      title: "Dr Ethan Giovanni",
-      path: "/imgs/bancali.png",
-      description: "Geologist - Docked in docking bay 1",
-    },
-    {
-      title: "Ashraf",
-      path: "/imgs/ashraf.png",
-      description: "Soon to be retired miner",
-    },
-    {
-      title: "Dana",
-      path: "/imgs/dana.png",
-      description: "Head driller on Ypsilon 14",
-    },
-    {
-      title: "Jenna",
-      path: "/imgs/jenna.png",
-      description: "Cook on Ypsilon 14",
-    },
-    {
-      title: "Kantaro",
-      path: "/imgs/kantaro.png",
-      description: "Loader on Ypsilon 14",
-    },
-    {
-      title: "Morgan",
-      path: "/imgs/morgan.png",
-      description: "Loader on Ypsilon 14",
-    },
-    {
-      title: "Rie",
-      path: "/imgs/rie.png",
-      description: "Mechanic on Ypsilon 14",
-    },
-    {
-      title: "Rosa",
-      path: "/imgs/rosa.png",
-      description: "Driller on Ypsilon 14",
-    },
-    {
-      title: "Princess",
-      path: "/imgs/cat.png",
-      description: "A cat",
-    },
-  ];
-
   const baseMap = new StationMap({
     levels: [
       {
@@ -275,7 +216,6 @@ export const ypsilon14 = (): Scenario => {
         linkedRoom: "DOCKING_BAY_2",
       },
     ],
-    images: images,
     theme: "amber",
   };
 
@@ -307,6 +247,5 @@ export const ypsilon14WithTunnels = (): Scenario => {
     name: "YPSILON 14",
     id: "YPSILON 14 - UNDERGROUND",
     map: newMap,
-    images: baseScenario.images,
   };
 };

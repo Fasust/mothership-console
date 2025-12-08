@@ -1,74 +1,6 @@
-import { Image } from "../image";
 import { POI_ID, Scenario } from "../scenario";
 
 export const prosperosDream = (): Scenario => {
-  const images: Image[] = [
-    {
-      title: "Loshe",
-      path: "/imgs/loshe.png",
-      description: "Head of the Dry Dock",
-    },
-    {
-      title: "Decontamination Robot",
-      path: "/imgs/robo.png",
-    },
-    {
-      title: "Officer 805",
-      path: "/imgs/officer.png",
-      description: "Officer of the Tempest CO",
-    },
-    {
-      title: "Sam",
-      path: "/imgs/sam.png",
-      description: "Owner of the Stellar Brun",
-    },
-    {
-      title: "Commander Cutter",
-      path: "/imgs/cutter.png",
-      description: "Commander of the Tempest CO",
-    },
-    {
-      title: "Babushka",
-      path: "/imgs/babushka.png",
-      description: "Runs the Chop shop",
-    },
-    {
-      title: "Zhenya",
-      path: "/imgs/zhenya.png",
-      description: "Helping hand at the Chop shop",
-    },
-    {
-      title: "Able",
-      path: "/imgs/able.png",
-      description: "Priest of the Solarian Church",
-    },
-    {
-      title: "Ukko",
-      path: "/imgs/ukko.png",
-      description: "Head of the Solarian Church",
-    },
-    {
-      title: "Imogen Cane",
-      path: "/imgs/cane.png",
-      description: "Leader of the Hunglungs",
-    },
-    {
-      title: "Dr Bancali",
-      path: "/imgs/bancali.png",
-      description: "Dr. in the Choke",
-    },
-    {
-      title: "Dr. Selene Korrin",
-      path: "/imgs/selene.png",
-      description: "Head of Tempest Co. Labs",
-    },
-    {
-      title: "Super Soldiers V1",
-      path: "/imgs/ss1.png",
-      description: "First Generation Tempest Co. Super Soldiers",
-    },
-  ];
-
   const scenario: Scenario = {
     id: "PROSPEROS DREAM",
     name: "PROSPERO'S DREAM",
@@ -168,7 +100,6 @@ export const prosperosDream = (): Scenario => {
         description: "Abandoned, quarantined wasteland.",
       },
     ],
-    images: images,
     theme: "pink",
   };
   return scenario;

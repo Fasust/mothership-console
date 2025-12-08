@@ -1,25 +1,6 @@
-import { Image } from "../image";
 import { POI_ID, Scenario } from "../scenario";
 
 export const bellStation = (): Scenario => {
-  const images: Image[] = [
-    {
-      title: "Arkady",
-      path: "/imgs/ARKADY.png",
-      description: "The first Diver",
-    },
-    {
-      title: "Noriko",
-      path: "/imgs/NORIKO.png",
-      description: "Wittness of something great and terrible",
-    },
-    {
-      title: "Ghost Eater",
-      path: "/imgs/ghost-eater.png",
-      description: "Veteran Cyborg Diver",
-    },
-  ];
-
   const scenario: Scenario = {
     id: "BELL STATION",
     name: "BELL STATION",
@@ -74,7 +55,6 @@ export const bellStation = (): Scenario => {
         defaultValue: 87,
       },
     ],
-    images: images,
     theme: "cyan",
   };
 
@@ -82,60 +62,6 @@ export const bellStation = (): Scenario => {
 };
 
 export const deepStation = (): Scenario => {
-  const images: Image[] = [
-    {
-      title: "The Chosen",
-      path: "/imgs/chosen.png",
-      description: "Chosen by Monarch",
-    },
-    {
-      title: "The Chosen King",
-      path: "/imgs/chosen-king.png",
-      description: "Chosen by the chosen",
-    },
-    {
-      title: "The Minotaur",
-      path: "/imgs/minitour.png",
-      pathAlt: "/imgs/minitour-2.png",
-      description: "???",
-    },
-    {
-      title: "The Mind Thief",
-      path: "/imgs/mind-thief.png",
-      description: "An escaped Child-Android from HEL",
-    },
-    {
-      title: "Lettuce Helmet",
-      path: "/imgs/helm.png",
-    },
-    {
-      title: "Exibition Hall",
-      path: "/imgs/exibition.png",
-    },
-    {
-      title: "The Furnace",
-      path: "/imgs/furnace.png",
-    },
-    {
-      title: "The Labyrinth",
-      path: "/imgs/maze.png",
-    },
-    {
-      title: "The Hanger",
-      path: "/imgs/hanger.png",
-    },
-    {
-      title: "Monarch",
-      path: "/imgs/monarch.png",
-      description: "The heart of the Deep",
-    },
-    {
-      title: "Chimera Tank",
-      path: "/imgs/chimera-tank.jpg",
-      description: "Cloudbank's prize winning engine of war",
-    },
-  ];
-
   const scenario: Scenario = {
     id: "DEEP STATION",
     name: "THE DEEP",
@@ -242,7 +168,6 @@ export const deepStation = (): Scenario => {
         description: "Engineering and support services.",
       },
     ],
-    images: images,
     theme: "cyan",
   };
 

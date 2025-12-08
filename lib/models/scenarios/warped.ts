@@ -1,34 +1,6 @@
-import { Image } from "../image";
 import { Scenario } from "../scenario";
 
 export const warped = (): Scenario => {
-  const images: Image[] = [
-    {
-      title: "Test Subject 01",
-      path: "/imgs/subject-01.jpg",
-    },
-    {
-      title: "Test Subject 02",
-      path: "/imgs/subject-02.jpg",
-    },
-    {
-      title: "Test Subject 03",
-      path: "/imgs/subject-03.jpg",
-    },
-    {
-      title: "Test Subject 04",
-      path: "/imgs/subject-04.jpg",
-    },
-    {
-      title: "Test Subject 05",
-      path: "/imgs/subject-05.jpg",
-    },
-    {
-      title: "Test Subject 06",
-      path: "/imgs/subject-06.jpg",
-    },
-  ];
-
   const scenario: Scenario = {
     id: "WARPED",
     name: "RSV FIDANZA",
@@ -108,7 +80,6 @@ R ◙           ◙═══╦════╩════╝░░░░░░�
                AIRLOCK                       .               .
                                              . . . . . . . . .              
 `,
-    images: images,
     systemLogs: [
       {
         time: "21-06-2525 09:20",

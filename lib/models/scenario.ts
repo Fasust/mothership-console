@@ -1,5 +1,4 @@
 import { Theme } from "../context/theme-context";
-import { Image } from "./image";
 import { bellStation, deepStation } from "./scenarios/deep";
 import { gretaBase } from "./scenarios/greta-base";
 import { prosperosDream } from "./scenarios/prosperos-dream";
@@ -149,7 +148,6 @@ export type Scenario = {
   asciiMap?: string;
   systemLogs?: SystemLog[];
   controlButtons?: ControlButton[];
-  images?: Image[];
   theme?: Theme;
   showPcView?: boolean;
 };

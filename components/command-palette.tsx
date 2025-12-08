@@ -15,11 +15,9 @@ import { useView } from "@/lib/context/view-context";
 import { allScenarios } from "@/lib/models/scenario";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ImageDetails } from "./images/image-details";
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const { scenario, setScenario } = useScenario();
@@ -28,8 +26,6 @@ export function CommandPalette() {
   const params = useParams();
   const currentViewType = params.viewType as string;
   const mapId = params.mapId as string;
-
-  const images = scenario.images || [];
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -47,13 +43,6 @@ export function CommandPalette() {
     setOpen(false);
     command();
   };
-
-  const handleImageSelect = (imageName: string) => {
-    setSelectedImage(imageName);
-    setOpen(false);
-  };
-
-  const selectedImageData = images.find((c) => c.title === selectedImage);
 
   return (
     <>
@@ -97,18 +86,7 @@ export function CommandPalette() {
               Navigation: ASCII Interior
             </CommandItem>
           </CommandGroup>
-          {images.length > 0 && (
-            <CommandGroup heading="Images">
-              {images.map((image) => (
-                <CommandItem
-                  key={image.title}
-                  onSelect={() => handleImageSelect(image.title)}
-                >
-                  Image: {image.title.toUpperCase()}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          )}
+
           <CommandGroup heading="Scenarios">
             {allScenarios.map((map, index) => (
               <CommandItem
@@ -142,15 +120,6 @@ export function CommandPalette() {
           </CommandGroup>
         </CommandList>
       </CommandDialog>
-
-      {/* Image Details Modal */}
-      {selectedImageData && (
-        <ImageDetails
-          image={selectedImageData}
-          isOpen={!!selectedImage}
-          onClose={() => setSelectedImage(null)}
-        />
-      )}
     </>
   );
 }
