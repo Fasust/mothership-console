@@ -2,7 +2,7 @@
 
 import { useAdmin } from "@/src/context/admin-context";
 import { AirlockState, useScenario } from "@/src/context/scenario-context";
-import type { RoomId } from "@/src/models/scenario";
+import type { RoomId } from "@/src/models/station-graph-map";
 import { useEffect, useState } from "react";
 import { ControlButton } from "./control-button";
 

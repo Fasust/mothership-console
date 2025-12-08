@@ -1,4 +1,5 @@
-import { POI_ID, Scenario } from "../../models/scenario";
+import { POI_ID } from "../poi";
+import type { Scenario } from "../scenario";
 
 export const prosperosDream = (): Scenario => {
   const scenario: Scenario = {
@@ -8,7 +9,6 @@ export const prosperosDream = (): Scenario => {
     crew: { current: 8258000, capacity: 6000000 },
     adminCredentials: { username: "ADMIN", password: "ADMIN" },
     charts: ["oxygen", "power"],
-    showPcView: true,
     stats: {
       Diameter: "12.98km",
       Circumference: "40.77km",

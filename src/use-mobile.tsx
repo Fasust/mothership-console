@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 
+/**
+ * Check if the device is mobile
+ * @returns True if the device is mobile, false otherwise
+ */
 export function useMobile() {
   const [isMobile, setIsMobile] = useState(false);
 

@@ -1,8 +1,9 @@
-import { Scenario, StationMap } from "../../models/scenario";
+import { Scenario } from "../scenario";
+import { StationGraphMap } from "../station-graph-map";
 
 // Scenario definitions
 export const ypsilon14 = (): Scenario => {
-  const baseMap = new StationMap({
+  const baseMap = new StationGraphMap({
     levels: [
       {
         rooms: ["DOCKING_BAY_1", null, "DOCKING_BAY_2"],
@@ -228,7 +229,7 @@ export const ypsilon14WithTunnels = (): Scenario => {
 
   const newMap =
     baseMap !== undefined
-      ? new StationMap({
+      ? new StationGraphMap({
           ...baseMap,
           levels: [
             ...baseMap.levels,

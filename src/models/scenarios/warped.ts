@@ -1,4 +1,4 @@
-import { Scenario } from "../../models/scenario";
+import { Scenario } from "../scenario";
 
 export const warped = (): Scenario => {
   const scenario: Scenario = {

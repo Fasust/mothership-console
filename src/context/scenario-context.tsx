@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  allScenarios,
-  type RoomId,
-  Scenario,
-  StationMap,
-} from "@/src/models/scenario";
+import { allScenarios, Scenario } from "@/src/models/scenario";
+import { RoomId, StationGraphMap } from "@/src/models/station-graph-map";
 import {
   createContext,
   type ReactNode,
@@ -14,7 +10,7 @@ import {
   useState,
 } from "react";
 
-import { ypsilon14 } from "../data/scenarios/ypsilon-14";
+import { ypsilon14 } from "../models/scenarios/ypsilon-14";
 import { useTheme } from "./theme-context";
 
 export type AirlockState = {
@@ -30,7 +26,7 @@ type ScenarioContextType = {
   toggleRoom: (roomId: RoomId) => void;
   airlockStates: Map<RoomId, AirlockState>;
   setAirlockState: (roomId: RoomId, state: Partial<AirlockState>) => void;
-  map: StationMap | undefined;
+  map: StationGraphMap | undefined;
 };
 
 const ScenarioContext = createContext<ScenarioContextType | undefined>(

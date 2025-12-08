@@ -6,6 +6,11 @@ export interface EmergencyPersistentState {
   startTime: number | null; // timestamp when emergency started
 }
 
+/**
+ * Repository for storing and retrieving emergency state.
+ *
+ * Allows persisting the emergency state across page refreshes.
+ */
 export class EmergencyRepository {
   private readonly storageKey = "mothership_emergency_state";
 

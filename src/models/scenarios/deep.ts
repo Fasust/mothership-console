@@ -1,4 +1,5 @@
-import { POI_ID, Scenario } from "../../models/scenario";
+import { POI_ID } from "../poi";
+import type { Scenario } from "../scenario";
 
 export const bellStation = (): Scenario => {
   const scenario: Scenario = {

@@ -14,7 +14,7 @@ import { useAdmin } from "@/src/context/admin-context";
 import { useDiagnostics } from "@/src/context/diagnostics-context";
 import { useEmergency } from "@/src/context/emergency-context";
 import { useScenario } from "@/src/context/scenario-context";
-import type { RoomId } from "@/src/models/scenario";
+import type { RoomId } from "@/src/models/station-graph-map";
 import { useState } from "react";
 import { AirlockControlPanel } from "./airlock-controls";
 import { ControlButton } from "./control-button";

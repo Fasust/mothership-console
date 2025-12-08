@@ -1,7 +1,8 @@
-import { Scenario, StationMap } from "../../models/scenario";
+import { Scenario } from "../scenario";
+import { StationGraphMap } from "../station-graph-map";
 
 export const gretaBase = (): Scenario => {
-  const map = new StationMap({
+  const map = new StationGraphMap({
     layout: {
       gridSize: {
         columns: 5,

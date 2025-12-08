@@ -1,6 +1,6 @@
 "use client";
 
-import type { ChartType } from "@/src/models/scenario";
+import type { ChartType } from "@/src/models/exterior-stats";
 import { Droplets, Thermometer, Wind, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { LiveChart } from "./live-chart";

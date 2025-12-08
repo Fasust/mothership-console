@@ -3,7 +3,7 @@
 import { useDiagnostics } from "@/src/context/diagnostics-context";
 import { useEmergency } from "@/src/context/emergency-context";
 import { useScenario } from "@/src/context/scenario-context";
-import type { DiagnosticMessage } from "@/src/models/scenario";
+import type { DiagnosticMessage } from "@/src/models/station-graph-map";
 import { useEffect, useState } from "react";
 
 export function DiagnosticsView() {

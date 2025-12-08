@@ -2,7 +2,7 @@
 
 import { usePoi } from "@/src/context/poi-context";
 import { useScenario } from "@/src/context/scenario-context";
-import { POI_ID } from "@/src/models/scenario";
+import { POI_ID } from "@/src/models/poi";
 import { useMobile } from "@/src/use-mobile";
 import { OrbitControls, PerspectiveCamera, Stars } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";

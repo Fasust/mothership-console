@@ -2,7 +2,7 @@
 
 import { useMarkers } from "@/src/context/marker-context";
 import { useScenario } from "@/src/context/scenario-context";
-import type { RoomDefinition, RoomId } from "@/src/models/scenario";
+import type { RoomDefinition, RoomId } from "@/src/models/station-graph-map";
 import { type JSX, useEffect, useState } from "react";
 
 export function StationMap() {
