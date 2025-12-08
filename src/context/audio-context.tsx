@@ -12,7 +12,9 @@ type AudioContextType = {
   tickVolume: number;
 };
 
-const AudioContext = createContext<AudioContextType | undefined>(undefined);
+const AudioContextReact = createContext<AudioContextType | undefined>(
+  undefined
+);
 
 export function AudioProvider({ children }: { children: React.ReactNode }) {
   const alarmSoundRef = useRef<HTMLAudioElement | null>(null);
@@ -41,12 +43,18 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
         alarmSoundRef.current = new Audio("/sounds/alarm_loop.wav");
         alarmSoundRef.current.loop = false;
         alarmSoundRef.current.volume = alarmVolume;
-        alarmSoundRef.current.addEventListener("ended", () => {
+        const handleAlarmEnded = () => {
           loopCountRef.current++;
-          if (loopCountRef.current < 3) {
-            alarmSoundRef.current?.play();
+          if (loopCountRef.current < 3 && alarmSoundRef.current) {
+            alarmSoundRef.current
+              .play()
+              .catch((e) =>
+                console.warn("Error playing alarm sound on loop:", e)
+              );
           }
-        });
+        };
+
+        alarmSoundRef.current.addEventListener("ended", handleAlarmEnded);
 
         tickSoundRef.current = new Audio("/sounds/clock_beep.mp3");
         tickSoundRef.current.volume = tickVolume;
@@ -59,7 +67,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       if (alarmSoundRef.current) {
         alarmSoundRef.current.pause();
         alarmSoundRef.current.currentTime = 0;
-        alarmSoundRef.current.removeEventListener("ended", () => {});
+        // The event listener is automatically garbage-collected when the element is dereferenced.
       }
       if (tickSoundRef.current) {
         tickSoundRef.current.pause();
@@ -130,7 +138,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AudioContext.Provider
+    <AudioContextReact.Provider
       value={{
         playAlarm,
         stopAlarm,
@@ -142,12 +150,12 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
       }}
     >
       {children}
-    </AudioContext.Provider>
+    </AudioContextReact.Provider>
   );
 }
 
 export function useAudio() {
-  const context = useContext(AudioContext);
+  const context = useContext(AudioContextReact);
   if (context === undefined) {
     throw new Error("useAudio must be used within an AudioProvider");
   }
