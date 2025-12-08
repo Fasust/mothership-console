@@ -15,14 +15,14 @@ import { useParams } from "next/navigation";
 
 export function ProviderRegistry({ children }: { children: React.ReactNode }) {
   const params = useParams();
-  const mapId = params.mapId as string;
+  const scenario = params.scenario as string;
   const viewType = params.viewType as string;
 
   return (
     <AudioProvider>
       <ThemeProvider>
         <EmergencyProvider>
-          <ScenarioProvider initialMapId={mapId}>
+          <ScenarioProvider initialMapId={scenario}>
             <DiagnosticsProvider>
               <ViewProvider initialViewType={viewType}>
                 <MarkerProvider>

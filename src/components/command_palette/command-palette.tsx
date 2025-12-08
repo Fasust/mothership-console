@@ -25,7 +25,7 @@ export function CommandPalette() {
 
   const params = useParams();
   const currentViewType = params.viewType as string;
-  const mapId = params.mapId as string;
+  const scenarioId = params.scenario as string;
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -59,7 +59,7 @@ export function CommandPalette() {
               onSelect={() =>
                 runCommand(() => {
                   setCurrentView("exterior");
-                  router.push(`/${mapId}/exterior`);
+                  router.push(`/${scenarioId}/exterior`);
                 })
               }
             >
@@ -69,7 +69,7 @@ export function CommandPalette() {
               onSelect={() =>
                 runCommand(() => {
                   setCurrentView("interior");
-                  router.push(`/${mapId}/interior`);
+                  router.push(`/${scenarioId}/interior`);
                 })
               }
             >
@@ -79,7 +79,7 @@ export function CommandPalette() {
               onSelect={() =>
                 runCommand(() => {
                   setCurrentView("interior-ascii");
-                  router.push(`/${mapId}/interior-ascii`);
+                  router.push(`/${scenarioId}/interior-ascii`);
                 })
               }
             >

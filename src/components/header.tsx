@@ -47,11 +47,11 @@ export function Header() {
   const router = useRouter();
   const params = useParams();
   const currentTime = DateTime.now().plus({ year: 100 });
-  const mapId = params.mapId as string;
+  const scenarioId = params.scenario as string;
 
   const handleViewChange = (view: ViewType) => {
     setCurrentView(view);
-    router.push(`/${mapId}/${view}`);
+    router.push(`/${scenarioId}/${view}`);
   };
 
   // Determine available views
