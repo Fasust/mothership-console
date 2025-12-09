@@ -93,12 +93,12 @@ export function EmergencyMenu({
             <input
               type="checkbox"
               id="alarm-toggle"
-              checked={emergency.alarm}
-              onChange={(e) => setEmergency({ alarm: e.target.checked })}
+              checked={!emergency.alarm}
+              onChange={(e) => setEmergency({ alarm: !e.target.checked })}
               className="h-4 w-4 rounded border-primary bg-black text-primary focus:ring-primary focus:ring-offset-0 accent-primary"
             />
             <label htmlFor="alarm-toggle" className="text-primary">
-              Alarm Active
+              Just Count Down - No Alarm
             </label>
           </div>
         </div>
