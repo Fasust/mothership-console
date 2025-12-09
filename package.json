@@ -23,7 +23,7 @@
     "expo-gl": "latest",
     "lucide-react": "^0.454.0",
     "luxon": "^3.6.1",
-    "next": "15.2.4",
+    "next": "15.2.6",
     "react": "^19",
     "react-dom": "^19",
     "react-native": "latest",
