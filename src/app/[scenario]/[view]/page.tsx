@@ -34,20 +34,6 @@ export default function ViewSelector() {
     setShowWardenMenu((prev) => !prev);
   };
 
-  // Add keyboard shortcut to toggle map selector
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      // Check for Cmd+K (Mac) or Ctrl+K (Windows/Linux)
-      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
-        event.preventDefault();
-        setShowWardenMenu((prev) => !prev);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
   return (
     <main className="min-h-screen p-2 md:p-4">
       <div className={`${emergencyClass} text-primary`}>

@@ -50,7 +50,7 @@ export function Footer({ onTerminalClick }: { onTerminalClick: () => void }) {
       }
 
       // Check for Cmd+I (Mac) or Ctrl+I (Windows/Linux)
-      if ((event.metaKey || event.ctrlKey) && event.key === "i") {
+      if ((event.metaKey || event.ctrlKey) && event.key === "k") {
         event.preventDefault();
         onTerminalClick();
       }
