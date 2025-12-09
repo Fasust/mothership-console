@@ -59,7 +59,7 @@ All scenarios are **fan‑made digital aids** for running published modules. All
 
 - **Module**: [The Haunting of Ypsilon 14](https://www.tuesdayknightgames.com/collections/mothership-starter-modules/products/the-haunting-of-ypsilon-14)
 - **Source file**: [`src/models/scenarios/ypsilon-14.ts`](src/models/scenarios/ypsilon-14.ts)
-- **Source book credits (from the module)**:
+- **Source book credits**:
   - Written by **D. G. Chapman** (GoGoGolf!, Bastard Magic, The Graverobber's Guide)
   - Layout by **Sean McCoy** (*Mothership*, *Dead Planet*, *A Pound of Flesh*)
   - Published by **Tuesday Knight Games**
@@ -79,7 +79,7 @@ PASSWORD: PRINCES
 
 - **Module**: [Another Bug Hunt](https://www.tuesdayknightgames.com/collections/mothership-starter-modules/products/another-bug-hunt)
 - **Source file**: [`src/models/scenarios/greta-base.ts`](src/models/scenarios/greta-base.ts)
-- **Source book credits (from the module)**:
+- **Source book credits**:
   - Written by **DG Chapman**, **Luke Gearing**, **Alan Gerding**, **Tyler Kimball**
   - Edited by **Jarrett Crader**
   - Layout & Graphic Design by **Lone Archivist**, **Sean McCoy**
@@ -97,7 +97,7 @@ This one has a similar setup for the interior view as [Ypsilon 14](#ypsilon-14).
 
 - **Module**: [A Pound of Flesh](https://www.tuesdayknightgames.com/products/a-pound-of-flesh)
 - **Source file**: [`src/models/scenarios/prosperos-dream.ts`](src/models/scenarios/prosperos-dream.ts)
-- **Source book credits (from the module)**:
+- **Source book credits**:
   - Written by **Donn Stroud**, **Sean McCoy**, and others
   - Art and Layout by **Sean McCoy**
   - Published by **Tuesday Knight Games**
@@ -110,7 +110,7 @@ No interior view for the Dream, since it's simply too massive. But instead the e
 
 - **Module**: [Warped Beyond Recognition](https://www.paradiso.zone/ooo-wbr/)
 - **Source file**: [`src/models/scenarios/rsv-fidanza.ts`](src/models/scenarios/rsv-fidanza.ts)
-- **Source book credits (from the module)**:
+- **Source book credits**:
   - Created by **Paradiso**
 
 For the interior view of this one I chose to just use the ASCII art already provided in the books, since it's basically perfect.
@@ -121,7 +121,7 @@ For the interior view of this one I chose to just use the ASCII art already prov
 
 - **Module**: [Gradient Descent](https://www.tuesdayknightgames.com/products/gradient-descent)
 - **Source file**: [`src/models/scenarios/deep.ts`](src/models/scenarios/deep.ts)
-- **Source book credits (from the module)**:
+- **Source book credits**:
   - Written by **Luke Gearing**
   - Illustrated by **Nick Tofani**
   - Edited by **Jarrett Crader**
