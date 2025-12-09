@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { audioRepository } from "../data/audio-repository";
 
 type AudioContextType = {
   playAlarm: () => void;
@@ -23,16 +24,16 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const [alarmVolume, setAlarmVolumeState] = useState(0.02);
   const [tickVolume, setTickVolumeState] = useState(0.05);
 
-  // Load saved volume settings from localStorage
+  // Load saved volume settings from repository (localStorage)
   useEffect(() => {
-    const savedAlarmVolume = localStorage.getItem("alarmVolume");
-    const savedTickVolume = localStorage.getItem("tickVolume");
+    const { alarmVolume: savedAlarmVolume, tickVolume: savedTickVolume } =
+      audioRepository.getSettings();
 
-    if (savedAlarmVolume) {
-      setAlarmVolumeState(parseFloat(savedAlarmVolume));
+    if (typeof savedAlarmVolume === "number") {
+      setAlarmVolumeState(savedAlarmVolume);
     }
-    if (savedTickVolume) {
-      setTickVolumeState(parseFloat(savedTickVolume));
+    if (typeof savedTickVolume === "number") {
+      setTickVolumeState(savedTickVolume);
     }
   }, []);
 
@@ -129,12 +130,12 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
 
   const setAlarmVolume = (volume: number) => {
     setAlarmVolumeState(volume);
-    localStorage.setItem("alarmVolume", volume.toString());
+    audioRepository.setAlarmVolume(volume);
   };
 
   const setTickVolume = (volume: number) => {
     setTickVolumeState(volume);
-    localStorage.setItem("tickVolume", volume.toString());
+    audioRepository.setTickVolume(volume);
   };
 
   return (
