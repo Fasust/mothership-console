@@ -1,6 +1,18 @@
 import { POI_ID } from "../poi";
 import type { Scenario } from "../scenario";
 
+/**
+ * A scenario for the Bell station from "Gradient Descent".
+ *
+ * https://www.tuesdayknightgames.com/products/gradient-descent?srsltid=AfmBOorGW8ym4DqmbT6uAmeQoLSPXNR6KxlpflqQau2s1a6pBIC42uOd
+ *
+ * Source book credits:
+ * - Written by Luke Gearing
+ * - Illustrated by Nick Tofani
+ * - Edited by Jarrett Crader
+ * - Layout by Sean McCoy
+ * - Tuesday Knight Games
+ */
 export const bellStation = (): Scenario => {
   const scenario: Scenario = {
     id: "BELL STATION",
@@ -62,6 +74,18 @@ export const bellStation = (): Scenario => {
   return scenario;
 };
 
+/**
+ * A scenario for the Deep station from "Gradient Descent".
+ *
+ * https://www.tuesdayknightgames.com/products/gradient-descent?srsltid=AfmBOorGW8ym4DqmbT6uAmeQoLSPXNR6KxlpflqQau2s1a6pBIC42uOd
+ *
+ * Source book credits:
+ * - Written by Luke Gearing
+ * - Illustrated by Nick Tofani
+ * - Edited by Jarrett Crader
+ * - Layout by Sean McCoy
+ * - Tuesday Knight Games
+ */
 export const deepStation = (): Scenario => {
   const scenario: Scenario = {
     id: "DEEP STATION",

@@ -9,150 +9,11 @@ import * as THREE from "three";
 
 const orbitRadius = 400;
 
-// Create a spaceship using simple geometry
-function Ship() {
-  const groupRef = useRef<THREE.Group>(null);
-
-  // Use useFrame hook to rotate only around Y axis
-  useFrame(() => {
-    if (groupRef.current) {
-      // Only rotate around Y axis
-      groupRef.current.rotation.y += 0.001;
-    }
-  });
-
-  return (
-    <group ref={groupRef} position={[orbitRadius, 0, 0]}>
-      {/* Main hull - elongated cylinder */}
-      <mesh rotation={[0, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[1, 1.5, 8, 8]} />
-        <meshBasicMaterial
-          color="#00ff00"
-          wireframe={true}
-          wireframeLinewidth={1}
-        />
-      </mesh>
-
-      {/* Cockpit/Bridge - front section */}
-      <mesh position={[-4, 0, 0]} rotation={[0, -Math.PI, -Math.PI / 2]}>
-        <sphereGeometry args={[1, 8, 2, 0, Math.PI * 2, 0, Math.PI / 2]} />
-        <meshBasicMaterial color="#00ff00" wireframe={true} />
-      </mesh>
-
-      {/* Wings - left and right */}
-      <mesh position={[0, 0, 3.2]} rotation={[0, -Math.PI / 2, 0]}>
-        <boxGeometry args={[4, 0.2, 1.5]} />
-        <meshBasicMaterial color="#00ff00" wireframe={true} />
-      </mesh>
-      <mesh position={[0, 0, -3.2]} rotation={[0, -Math.PI / 2, 0]}>
-        <boxGeometry args={[4, 0.2, 1.5]} />
-        <meshBasicMaterial color="#00ff00" wireframe={true} />
-      </mesh>
-
-      {/* Communication array/antenna */}
-      <mesh position={[1, 2, 0]}>
-        <boxGeometry args={[0.1, 1.5, 0.1]} />
-        <meshBasicMaterial color="#00ff00" wireframe={true} />
-      </mesh>
-    </group>
-  );
-}
-
-// Create a large orbital path with a central planet
-function OrbitalSystem() {
-  // Define the orbital parameters
-  const segments = 100; // Enough segments to make it look smooth
-  const planetSize = 60; // Size of the central planet
-  const planetRef = useRef<THREE.Mesh>(null);
-
-  // Create points for a horizontal circle in XZ plane
-  const points = [];
-  for (let i = 0; i <= segments; i++) {
-    const theta = (i / segments) * Math.PI * 2;
-    // Ensure we're creating valid numbers for the coordinates
-    const x = Math.cos(theta) * orbitRadius;
-    const z = Math.sin(theta) * orbitRadius;
-    points.push(new THREE.Vector3(x, 0, z));
-  }
-
-  // Add rotation animation
-  useFrame(() => {
-    if (planetRef.current) {
-      // Rotate around Y axis
-      planetRef.current.rotation.y -= 0.0002;
-    }
-  });
-
-  return (
-    <group position={[0, 0, 0]}>
-      {/* Orbital path - using simple line instead of LineSegmentsGeometry */}
-      <line>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            array={new Float32Array(points.flatMap((p) => [p.x, p.y, p.z]))}
-            count={points.length}
-            itemSize={3}
-            args={[new Float32Array(points.flatMap((p) => [p.x, p.y, p.z])), 3]}
-          />
-        </bufferGeometry>
-        <lineBasicMaterial color="#8f6901" opacity={0.5} transparent={true} />
-      </line>
-
-      {/* Central planet */}
-      <mesh ref={planetRef}>
-        <sphereGeometry args={[planetSize, 12, 12]} />
-        <meshBasicMaterial color="#C64523" wireframe={true} />
-      </mesh>
-    </group>
-  );
-}
-
-function CameraController() {
-  const { camera } = useThree();
-  const [cameraAngle, setCameraAngle] = useState(0);
-  const [panPhase, setPanPhase] = useState(0);
-
-  // Modified easing function that spends most time near minimum
-  const modifiedEase = (t: number) => {
-    // Convert input to 0-1 range
-    const normalized = (Math.sin(t) + 1) / 2;
-    // Create a steep curve that spends most time near 0
-    return Math.pow(normalized, 4);
-  };
-
-  useFrame(() => {
-    // Slowly increase the angle
-    setCameraAngle((prev) => prev + 0.0005);
-    // Update pan phase
-    setPanPhase((prev) => prev + 0.0001);
-
-    // Calculate camera position in a circle around the asteroid
-    const minRadius = 20; // Minimum distance from asteroid
-    const maxRadius = 200; // Maximum distance from asteroid
-    const range = maxRadius - minRadius;
-
-    // Apply modified easing function
-    const easedPhase = modifiedEase(panPhase);
-    const radius = minRadius + easedPhase * range;
-
-    // Calculate height based on distance from asteroid
-    const minHeight = 5;
-    const maxHeight = 50;
-    const height = minHeight + easedPhase * (maxHeight - minHeight);
-
-    // Calculate position in a circle around the asteroid
-    const x = orbitRadius + Math.cos(cameraAngle) * radius;
-    const y = height; // Dynamic height based on distance
-    const z = Math.sin(cameraAngle) * radius;
-
-    camera.position.set(x, y, z);
-    camera.lookAt(orbitRadius, 0, 0);
-  });
-
-  return null;
-}
-
+/**
+ * Renders a 3D view of a ship.
+ *
+ * The view allows switching between free cam mode and orbital cam mode.
+ */
 export function ShipView() {
   const [isFreeCam, setIsFreeCam] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -272,4 +133,155 @@ export function ShipView() {
       </div>
     </div>
   );
+}
+
+/**
+ * Renders a spaceship using simple geometry.
+ */
+function Ship() {
+  const groupRef = useRef<THREE.Group>(null);
+
+  // Use useFrame hook to rotate only around Y axis
+  useFrame(() => {
+    if (groupRef.current) {
+      // Only rotate around Y axis
+      groupRef.current.rotation.y += 0.001;
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={[orbitRadius, 0, 0]}>
+      {/* Main hull - elongated cylinder */}
+      <mesh rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[1, 1.5, 8, 8]} />
+        <meshBasicMaterial
+          color="#00ff00"
+          wireframe={true}
+          wireframeLinewidth={1}
+        />
+      </mesh>
+
+      {/* Cockpit/Bridge - front section */}
+      <mesh position={[-4, 0, 0]} rotation={[0, -Math.PI, -Math.PI / 2]}>
+        <sphereGeometry args={[1, 8, 2, 0, Math.PI * 2, 0, Math.PI / 2]} />
+        <meshBasicMaterial color="#00ff00" wireframe={true} />
+      </mesh>
+
+      {/* Wings - left and right */}
+      <mesh position={[0, 0, 3.2]} rotation={[0, -Math.PI / 2, 0]}>
+        <boxGeometry args={[4, 0.2, 1.5]} />
+        <meshBasicMaterial color="#00ff00" wireframe={true} />
+      </mesh>
+      <mesh position={[0, 0, -3.2]} rotation={[0, -Math.PI / 2, 0]}>
+        <boxGeometry args={[4, 0.2, 1.5]} />
+        <meshBasicMaterial color="#00ff00" wireframe={true} />
+      </mesh>
+
+      {/* Communication array/antenna */}
+      <mesh position={[1, 2, 0]}>
+        <boxGeometry args={[0.1, 1.5, 0.1]} />
+        <meshBasicMaterial color="#00ff00" wireframe={true} />
+      </mesh>
+    </group>
+  );
+}
+
+/**
+ * Renders a large orbital path with a central planet.
+ */
+function OrbitalSystem() {
+  // Define the orbital parameters
+  const segments = 100; // Enough segments to make it look smooth
+  const planetSize = 60; // Size of the central planet
+  const planetRef = useRef<THREE.Mesh>(null);
+
+  // Create points for a horizontal circle in XZ plane
+  const points = [];
+  for (let i = 0; i <= segments; i++) {
+    const theta = (i / segments) * Math.PI * 2;
+    // Ensure we're creating valid numbers for the coordinates
+    const x = Math.cos(theta) * orbitRadius;
+    const z = Math.sin(theta) * orbitRadius;
+    points.push(new THREE.Vector3(x, 0, z));
+  }
+
+  // Add rotation animation
+  useFrame(() => {
+    if (planetRef.current) {
+      // Rotate around Y axis
+      planetRef.current.rotation.y -= 0.0002;
+    }
+  });
+
+  return (
+    <group position={[0, 0, 0]}>
+      {/* Orbital path - using simple line instead of LineSegmentsGeometry */}
+      <line>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            array={new Float32Array(points.flatMap((p) => [p.x, p.y, p.z]))}
+            count={points.length}
+            itemSize={3}
+            args={[new Float32Array(points.flatMap((p) => [p.x, p.y, p.z])), 3]}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial color="#8f6901" opacity={0.5} transparent={true} />
+      </line>
+
+      {/* Central planet */}
+      <mesh ref={planetRef}>
+        <sphereGeometry args={[planetSize, 12, 12]} />
+        <meshBasicMaterial color="#C64523" wireframe={true} />
+      </mesh>
+    </group>
+  );
+}
+
+/**
+ * Controls the camera movement for the orbital cam mode.
+ */
+function CameraController() {
+  const { camera } = useThree();
+  const [cameraAngle, setCameraAngle] = useState(0);
+  const [panPhase, setPanPhase] = useState(0);
+
+  // Modified easing function that spends most time near minimum
+  const modifiedEase = (t: number) => {
+    // Convert input to 0-1 range
+    const normalized = (Math.sin(t) + 1) / 2;
+    // Create a steep curve that spends most time near 0
+    return Math.pow(normalized, 4);
+  };
+
+  useFrame(() => {
+    // Slowly increase the angle
+    setCameraAngle((prev) => prev + 0.0005);
+    // Update pan phase
+    setPanPhase((prev) => prev + 0.0001);
+
+    // Calculate camera position in a circle around the asteroid
+    const minRadius = 20; // Minimum distance from asteroid
+    const maxRadius = 200; // Maximum distance from asteroid
+    const range = maxRadius - minRadius;
+
+    // Apply modified easing function
+    const easedPhase = modifiedEase(panPhase);
+    const radius = minRadius + easedPhase * range;
+
+    // Calculate height based on distance from asteroid
+    const minHeight = 5;
+    const maxHeight = 50;
+    const height = minHeight + easedPhase * (maxHeight - minHeight);
+
+    // Calculate position in a circle around the asteroid
+    const x = orbitRadius + Math.cos(cameraAngle) * radius;
+    const y = height; // Dynamic height based on distance
+    const z = Math.sin(cameraAngle) * radius;
+
+    camera.position.set(x, y, z);
+    camera.lookAt(orbitRadius, 0, 0);
+  });
+
+  return null;
 }

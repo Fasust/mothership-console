@@ -1,6 +1,16 @@
 import { POI_ID } from "../poi";
 import type { Scenario } from "../scenario";
 
+/**
+ * A scenario for the Prospero's Dream station from "A Pound of Flesh".
+ *
+ * https://www.tuesdayknightgames.com/products/a-pound-of-flesh
+ *
+ * Source book credits:
+ * - Written by Donn Stroud, Sean McCoy, and others
+ * - Art and Layout by Sean McCoy
+ * - Tuesday Knight Games
+ */
 export const prosperosDream = (): Scenario => {
   const scenario: Scenario = {
     id: "PROSPEROS DREAM",

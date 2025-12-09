@@ -10,6 +10,11 @@ import { ShipView } from "./ship-view";
 
 export type ViewAngle = "top" | "default";
 
+/**
+ * Renders the exterior view for the current scenario.
+ *
+ * Uses the appropriate view component based on the scenario type.
+ */
 export function ExteriorView({
   viewAngle = "default",
 }: {

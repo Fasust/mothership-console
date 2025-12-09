@@ -7,6 +7,11 @@ import { EmergencyMenu } from "./emergency/emergency-menu";
 
 const minClicksToOpenSecretMenus = 3;
 
+/**
+ * A footer that is displayed at the bottom of the page.
+ *
+ * Has 2 secret menus that can be opened by clicking on the text.
+ */
 export function Footer({ onTerminalClick }: { onTerminalClick: () => void }) {
   const { scenario } = useScenario();
   const { emergency, setEmergency } = useEmergency();

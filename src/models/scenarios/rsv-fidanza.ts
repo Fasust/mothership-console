@@ -1,5 +1,14 @@
 import { Scenario } from "../scenario";
 
+/**
+ * A scenario for the RSV Fidanza from "Warped Beyond Recognition".
+ *
+ * https://www.paradiso.zone/ooo-wbr/
+ *
+ * Source book credits:
+ * - Created by Paradiso
+ * - Tuesday Knight Games
+ */
 export const rsvFidanza = (): Scenario => {
   const scenario: Scenario = {
     id: "RSV FIDANZA",

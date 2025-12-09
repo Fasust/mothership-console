@@ -13,6 +13,11 @@ interface AirlockControlPanelProps {
   onClose: () => void;
 }
 
+/**
+ * Control panel for an airlock.
+ *
+ * Allows the user to toggle the doors of the airlock and enter the access code to operate the doors.
+ */
 export function AirlockControlPanel({
   roomId,
   state,

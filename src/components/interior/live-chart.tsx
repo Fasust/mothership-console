@@ -12,6 +12,11 @@ interface LiveChartProps {
   labels?: string[];
 }
 
+/**
+ * Renders a live chart of a given data.
+ *
+ * Uses the data to display the chart.
+ */
 export function LiveChart({
   title,
   unit,

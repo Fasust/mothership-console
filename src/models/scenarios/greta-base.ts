@@ -1,6 +1,21 @@
 import { Scenario } from "../scenario";
 import { StationGraphMap } from "../station-graph-map";
 
+/**
+ * A scenario for the Greta Base from "Another Bug Hunt"
+ *
+ * https://www.tuesdayknightgames.com/collections/mothership-starter-modules/products/another-bug-hunt
+ *
+ * Source book credits:
+ * - Written by DG CHAPMAN, LUKE GEARING, ALAN GERDING, TYLER KIMBALL
+ * - Edited by JARRETT CRADER
+ * - Layout & Graphic Design by LONE ARCHIVIST, SEAN McCOY
+ * - PDF Remediation by DAI SHUGARS
+ * - Art by DON AUSTIN, FRANCK BESANÇON, PAUL ENAMI, JACOB HAYNES, DAVID HOSKINS, ZACH HAZARD VAUPEN, AND SAM WILDMAN
+ * - Playtested by REECE CARTER
+ * - Proofread by DANIEL HALLINAN AND JANNE PUONTI
+ * - Tuesday Knight Games
+ */
 export const gretaBase = (): Scenario => {
   const map = new StationGraphMap({
     layout: {

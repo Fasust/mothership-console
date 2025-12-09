@@ -17,87 +17,11 @@ import {
 import { useEffect, useState } from "react";
 import { Button } from "../button";
 
-// Map of stat types to their corresponding icons
-const statIcons = {
-  composition: Layers,
-  atmosphericAnalysis: Layers,
-  rotationSpeed: Orbit,
-  surfaceTemp: Thermometer,
-  radiationLevel: Zap,
-  resourcesExtracted: Database,
-  remainingDeposits: Database,
-  windSpeed: Wind,
-  humidity: Droplets,
-  researchProgress: BarChart,
-  anomalyReadings: Zap,
-};
-
-// Composition data for different scenario types
-const compositionData = {
-  asteroid: [
-    { name: "IRON", value: 62 },
-    { name: "NICKEL", value: 14 },
-    { name: "COBALT", value: 8 },
-    { name: "OTHER MINERALS", value: 16 },
-  ],
-  planet: [
-    { name: "NITROGEN", value: 68 },
-    { name: "OXYGEN", value: 24 },
-    { name: "ARGON", value: 5 },
-    { name: "OTHER GASES", value: 3 },
-  ],
-  bell: [
-    { name: "HULL INTEGRITY", value: 96 },
-    { name: "THERMAL SHIELDING", value: 92 },
-    { name: "RADIATION BARRIER", value: 98 },
-    { name: "DOCK SEALS", value: 85 },
-  ],
-  deep: [
-    { name: "HULL INTEGRITY", value: 96 },
-    { name: "THERMAL SHIELDING", value: 92 },
-    { name: "CORE INTEGRITY", value: 98 },
-    { name: "CORE TEMPERATURE", value: 98 },
-  ],
-  prosperos: [
-    { name: "HULL INTEGRITY", value: 96 },
-    { name: "THERMAL SHIELDING", value: 92 },
-    { name: "CORE INTEGRITY", value: 98 },
-    { name: "CORE TEMPERATURE", value: 98 },
-  ],
-  ship: [
-    { name: "HULL INTEGRITY", value: 96 },
-    { name: "THERMAL SHIELDING", value: 92 },
-    { name: "CORE INTEGRITY", value: 98 },
-    { name: "WARP CORE", value: 5 },
-  ],
-};
-
-// Toggle button component based on header.tsx button design
-function ToggleButton({
-  children,
-  label,
-  isActive,
-  onClick,
-}: {
-  children?: React.ReactNode;
-  label: string;
-  isActive: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <Button
-      variant="outline"
-      onClick={onClick}
-      className={`text-m w-full px-2 py-1 h-10 border-primary hover:bg-primary hover:text-black relative ${
-        isActive ? "bg-primary text-black" : ""
-      }`}
-    >
-      {children}
-      {label}
-    </Button>
-  );
-}
-
+/**
+ * Statics displayed in the exterior view.
+ *
+ * Uses values from the scenario.exteriorStats array.
+ */
 export function ExteriorStats() {
   const { scenario } = useScenario();
   const { selectedPOI, setSelectedPOI } = usePoi();
@@ -442,5 +366,88 @@ export function ExteriorStats() {
         scenario.pointsOfInterest.length > 0 &&
         renderPoiSelection()}
     </div>
+  );
+}
+
+// Map of stat types to their corresponding icons
+const statIcons = {
+  composition: Layers,
+  atmosphericAnalysis: Layers,
+  rotationSpeed: Orbit,
+  surfaceTemp: Thermometer,
+  radiationLevel: Zap,
+  resourcesExtracted: Database,
+  remainingDeposits: Database,
+  windSpeed: Wind,
+  humidity: Droplets,
+  researchProgress: BarChart,
+  anomalyReadings: Zap,
+};
+
+// Composition data for different scenario types
+const compositionData = {
+  asteroid: [
+    { name: "IRON", value: 62 },
+    { name: "NICKEL", value: 14 },
+    { name: "COBALT", value: 8 },
+    { name: "OTHER MINERALS", value: 16 },
+  ],
+  planet: [
+    { name: "NITROGEN", value: 68 },
+    { name: "OXYGEN", value: 24 },
+    { name: "ARGON", value: 5 },
+    { name: "OTHER GASES", value: 3 },
+  ],
+  bell: [
+    { name: "HULL INTEGRITY", value: 96 },
+    { name: "THERMAL SHIELDING", value: 92 },
+    { name: "RADIATION BARRIER", value: 98 },
+    { name: "DOCK SEALS", value: 85 },
+  ],
+  deep: [
+    { name: "HULL INTEGRITY", value: 96 },
+    { name: "THERMAL SHIELDING", value: 92 },
+    { name: "CORE INTEGRITY", value: 98 },
+    { name: "CORE TEMPERATURE", value: 98 },
+  ],
+  prosperos: [
+    { name: "HULL INTEGRITY", value: 96 },
+    { name: "THERMAL SHIELDING", value: 92 },
+    { name: "CORE INTEGRITY", value: 98 },
+    { name: "CORE TEMPERATURE", value: 98 },
+  ],
+  ship: [
+    { name: "HULL INTEGRITY", value: 96 },
+    { name: "THERMAL SHIELDING", value: 92 },
+    { name: "CORE INTEGRITY", value: 98 },
+    { name: "WARP CORE", value: 5 },
+  ],
+};
+
+/**
+ * Toggle button component based on header.tsx button design.
+ */
+function ToggleButton({
+  children,
+  label,
+  isActive,
+  onClick,
+}: {
+  children?: React.ReactNode;
+  label: string;
+  isActive: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <Button
+      variant="outline"
+      onClick={onClick}
+      className={`text-m w-full px-2 py-1 h-10 border-primary hover:bg-primary hover:text-black relative ${
+        isActive ? "bg-primary text-black" : ""
+      }`}
+    >
+      {children}
+      {label}
+    </Button>
   );
 }

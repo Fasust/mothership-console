@@ -39,6 +39,11 @@ const tableIcons = {
 
 export type TableIcon = keyof typeof tableIcons;
 
+/**
+ * A header that is displayed at the top of the page.
+ *
+ * Displays the name of the station, the current view, and the current time.
+ */
 export function Header() {
   const { scenario, map } = useScenario();
   const { emergency } = useEmergency();

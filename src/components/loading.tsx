@@ -1,3 +1,8 @@
+/**
+ * A loading screen that is displayed when the page is loading.
+ *
+ * Displays a loading animation and a message.
+ */
 export default function Loading() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-primary">

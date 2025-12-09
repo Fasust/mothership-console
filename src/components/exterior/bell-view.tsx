@@ -13,51 +13,11 @@ import {
   orbitRadius,
 } from "./deep-view";
 
-function CameraController() {
-  const { camera } = useThree();
-  const [cameraAngle, setCameraAngle] = useState(0);
-  const [panPhase, setPanPhase] = useState(0);
-
-  // Modified easing function that spends most time near minimum
-  const modifiedEase = (t: number) => {
-    // Convert input to 0-1 range
-    const normalized = (Math.sin(t) + 1) / 2;
-    // Create a steep curve that spends most time near 0
-    return Math.pow(normalized, 4);
-  };
-
-  useFrame(() => {
-    // Slowly increase the angle
-    setCameraAngle((prev) => prev + 0.0005);
-    // Update pan phase
-    setPanPhase((prev) => prev + 0.0001);
-
-    // Calculate camera position in a circle around the asteroid
-    const minRadius = 150; // Minimum distance from asteroid
-    const maxRadius = 520; // Maximum distance from asteroid
-    const range = maxRadius - minRadius;
-
-    // Apply modified easing function
-    const easedPhase = modifiedEase(panPhase);
-    const radius = minRadius + easedPhase * range;
-
-    // Calculate height based on distance from asteroid
-    const minHeight = 20;
-    const maxHeight = 130;
-    const height = minHeight + easedPhase * (maxHeight - minHeight);
-
-    // Calculate position in a circle around the asteroid
-    const x = orbitRadius + Math.cos(cameraAngle) * radius;
-    const y = height; // Dynamic height based on distance
-    const z = Math.sin(cameraAngle) * radius;
-
-    camera.position.set(x, y, z);
-    camera.lookAt(orbitRadius, 0, 0);
-  });
-
-  return null;
-}
-
+/**
+ * Renders a 3D view of the Bell station orbiting The Deep.
+ *
+ * The view allows switching between free cam mode and orbital cam mode.
+ */
 export function BellView() {
   const [isFreeCam, setIsFreeCam] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -182,4 +142,52 @@ export function BellView() {
       </div>
     </div>
   );
+}
+
+/**
+ * Controls the camera movement for the orbital cam mode.
+ */
+function CameraController() {
+  const { camera } = useThree();
+  const [cameraAngle, setCameraAngle] = useState(0);
+  const [panPhase, setPanPhase] = useState(0);
+
+  // Modified easing function that spends most time near minimum
+  const modifiedEase = (t: number) => {
+    // Convert input to 0-1 range
+    const normalized = (Math.sin(t) + 1) / 2;
+    // Create a steep curve that spends most time near 0
+    return Math.pow(normalized, 4);
+  };
+
+  useFrame(() => {
+    // Slowly increase the angle
+    setCameraAngle((prev) => prev + 0.0005);
+    // Update pan phase
+    setPanPhase((prev) => prev + 0.0001);
+
+    // Calculate camera position in a circle around the asteroid
+    const minRadius = 150; // Minimum distance from asteroid
+    const maxRadius = 520; // Maximum distance from asteroid
+    const range = maxRadius - minRadius;
+
+    // Apply modified easing function
+    const easedPhase = modifiedEase(panPhase);
+    const radius = minRadius + easedPhase * range;
+
+    // Calculate height based on distance from asteroid
+    const minHeight = 20;
+    const maxHeight = 130;
+    const height = minHeight + easedPhase * (maxHeight - minHeight);
+
+    // Calculate position in a circle around the asteroid
+    const x = orbitRadius + Math.cos(cameraAngle) * radius;
+    const y = height; // Dynamic height based on distance
+    const z = Math.sin(cameraAngle) * radius;
+
+    camera.position.set(x, y, z);
+    camera.lookAt(orbitRadius, 0, 0);
+  });
+
+  return null;
 }

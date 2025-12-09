@@ -6,6 +6,11 @@ import { useScenario } from "@/src/context/scenario-context";
 import type { DiagnosticMessage } from "@/src/models/station-graph-map";
 import { useEffect, useState } from "react";
 
+/**
+ * Renders a view of the diagnostics of the station.
+ *
+ * Uses the scenario.map.diagnostics property to display the diagnostics.
+ */
 export function DiagnosticsView() {
   const { map } = useScenario();
   const { emergency } = useEmergency();

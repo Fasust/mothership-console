@@ -7,6 +7,9 @@ import { allScenarios, Scenario } from "@/src/models/scenario";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+/**
+ * A menu that allows the user to select a scenario and a theme.
+ */
 export function WardenMenu({
   showWardenMenu,
   setShowWardenMenu,

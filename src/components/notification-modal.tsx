@@ -6,6 +6,11 @@ interface NotificationModalProps {
   onClose: () => void;
 }
 
+/**
+ * A modal that displays a success or error message.
+ *
+ * Allows the user to close the modal.
+ */
 export function NotificationModal({
   type,
   message,

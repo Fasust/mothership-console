@@ -3,6 +3,11 @@
 import { useAdmin } from "@/src/context/admin-context";
 import { useState } from "react";
 
+/**
+ * A modal that allows the user to login as an administrator.
+ *
+ * Uses the handleLogin function to authenticate the user.
+ */
 export function AdminLoginModal() {
   const { handleLogin, hideLogin } = useAdmin();
   const [username, setUsername] = useState("");

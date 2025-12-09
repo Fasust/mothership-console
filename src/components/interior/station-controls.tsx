@@ -19,6 +19,11 @@ import { useState } from "react";
 import { AirlockControlPanel } from "./airlock-controls";
 import { ControlButton } from "./control-button";
 
+/**
+ * Renders a panel of controls for the station.
+ *
+ * Uses the scenario.controlButtons property to display the controls.
+ */
 export function StationControls() {
   const { isAdmin, showLogin } = useAdmin();
   const { scenario, map, toggleRoom, airlockStates, setAirlockState } =

@@ -7,6 +7,11 @@ import { AdminLoginModal } from "../admin-login-modal";
 import { InteriorCharts } from "./interior-charts";
 import { StationControls } from "./station-controls";
 
+/**
+ * Renders a panel of information about the station.
+ *
+ * Uses the scenario.charts, scenario.controlButtons, and scenario.systemLogs properties to display the information.
+ */
 export function InfoPanel() {
   const { scenario } = useScenario();
   const { isLoginVisible } = useAdmin();

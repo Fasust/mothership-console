@@ -2,6 +2,11 @@
 
 import { useScenario } from "@/src/context/scenario-context";
 
+/**
+ * Renders an ASCII map of the interior of the station.
+ *
+ * Uses the scenario.asciiMap property to display the map.
+ */
 export function AsciiInteriorView() {
   const { scenario } = useScenario();
 

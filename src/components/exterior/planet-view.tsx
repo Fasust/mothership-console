@@ -12,170 +12,11 @@ const stationPosition = { x: 1, y: 0.35 }; // Normalized position on planet surf
 const planetSize = 10;
 const sunSize = 30; // Size of the central sun
 
-// Create a planet with a station marker
-function PlanetWithStation() {
-  const planetRef = useRef<THREE.Group>(null);
-  const stationRef = useRef<THREE.Group>(null);
-
-  // Calculate the position of the station on the planet surface
-  const getStationPosition = () => {
-    // Convert from normalized coordinates to spherical coordinates
-    const phi = stationPosition.x * Math.PI * 2; // longitude (0 to 2π)
-    const theta = stationPosition.y * Math.PI; // latitude (0 to π)
-
-    // Convert spherical to cartesian coordinates
-    const x = planetSize * Math.sin(theta) * Math.cos(phi);
-    const y = planetSize * Math.cos(theta);
-    const z = planetSize * Math.sin(theta) * Math.sin(phi);
-
-    return [x, y, z];
-  };
-
-  // Use useFrame hook to rotate the planet
-  useFrame(() => {
-    if (planetRef.current) {
-      // Rotate around Y axis
-      planetRef.current.rotation.y += 0.0005;
-
-      // Update station position to maintain outward direction
-      if (stationRef.current) {
-        const [x, y, z] = getStationPosition();
-        stationRef.current.position.set(x, y, z);
-
-        // Make station point outward from center of planet
-        stationRef.current.lookAt(
-          planetRef.current.position.x,
-          -planetRef.current.position.y,
-          planetRef.current.position.z
-        );
-      }
-    }
-  });
-
-  const [stationX, stationY, stationZ] = getStationPosition();
-
-  return (
-    <group ref={planetRef} position={[orbitRadius, 0, 0]}>
-      {/* Planet - simple sphere with amber color */}
-      <mesh>
-        <sphereGeometry args={[planetSize, planetSize, planetSize]} />
-        <meshBasicMaterial
-          color="#FFB300"
-          wireframe={true}
-          wireframeLinewidth={1}
-        />
-      </mesh>
-
-      {/* Station marker (pointing outward) */}
-      <group ref={stationRef} position={[stationX, stationY, stationZ]}>
-        {/* Base of the marker */}
-        <mesh position={[0, 0, 0]}>
-          <boxGeometry args={[1, 1, 0.5]} />
-          <meshBasicMaterial color="#00ff00" wireframe={true} />
-        </mesh>
-      </group>
-    </group>
-  );
-}
-
-// Create a large orbital system with a central sun
-function OrbitalSystem() {
-  // Define the orbital parameters
-  const segments = 100; // Enough segments to make it look smooth
-  const sunRef = useRef<THREE.Mesh>(null);
-
-  // Create points for a horizontal circle in XZ plane
-  const points = [];
-  for (let i = 0; i <= segments; i++) {
-    const theta = (i / segments) * Math.PI * 2;
-    // Ensure we're creating valid numbers for the coordinates
-    const x = Math.cos(theta) * orbitRadius;
-    const z = Math.sin(theta) * orbitRadius;
-    points.push(new THREE.Vector3(x, 0, z));
-  }
-
-  // Add rotation animation
-  useFrame(() => {
-    if (sunRef.current) {
-      // Rotate around Y axis
-      sunRef.current.rotation.y += 0.0003;
-    }
-  });
-
-  return (
-    <group position={[0, 0, 0]}>
-      {/* Orbital path - using simple line */}
-      <line>
-        <bufferGeometry>
-          <float32BufferAttribute
-            attach="attributes-position"
-            array={new Float32Array(points.flatMap((p) => [p.x, p.y, p.z]))}
-            count={points.length}
-            itemSize={3}
-            args={[new Float32Array(points.flatMap((p) => [p.x, p.y, p.z])), 3]}
-          />
-        </bufferGeometry>
-        <lineBasicMaterial color="#ffaa00" opacity={0.5} transparent={true} />
-      </line>
-
-      {/* Central sun */}
-      <mesh ref={sunRef}>
-        <sphereGeometry args={[sunSize, sunSize, sunSize]} />
-        <meshBasicMaterial
-          color="#C64523"
-          wireframe={true}
-          wireframeLinewidth={1}
-        />
-      </mesh>
-    </group>
-  );
-}
-
-function CameraController() {
-  const { camera } = useThree();
-  const [cameraAngle, setCameraAngle] = useState(0);
-  const [panPhase, setPanPhase] = useState(0);
-
-  // Modified easing function that spends most time near minimum
-  const modifiedEase = (t: number) => {
-    // Convert input to 0-1 range
-    const normalized = (Math.sin(t) + 1) / 2;
-    // Create a steep curve that spends most time near 0
-    return Math.pow(normalized, 4);
-  };
-
-  useFrame(() => {
-    // Slowly increase the angle
-    setCameraAngle((prev) => prev + 0.0005);
-    // Update pan phase
-    setPanPhase((prev) => prev + 0.0001);
-
-    // Calculate camera position in a circle around the asteroid
-    const minRadius = 50; // Minimum distance from asteroid
-    const maxRadius = 230; // Maximum distance from asteroid
-    const range = maxRadius - minRadius;
-
-    // Apply modified easing function
-    const easedPhase = modifiedEase(panPhase);
-    const radius = minRadius + easedPhase * range;
-
-    // Calculate height based on distance from asteroid
-    const minHeight = 5;
-    const maxHeight = 85;
-    const height = minHeight + easedPhase * (maxHeight - minHeight);
-
-    // Calculate position in a circle around the asteroid
-    const x = orbitRadius + Math.cos(cameraAngle) * radius;
-    const y = height; // Dynamic height based on distance
-    const z = Math.sin(cameraAngle) * radius;
-
-    camera.position.set(x, y, z);
-    camera.lookAt(orbitRadius, 0, 0);
-  });
-
-  return null;
-}
-
+/**
+ * Renders a 3D view of a planet with a station.
+ *
+ * The view allows switching between free cam mode and orbital cam mode.
+ */
 export function PlanetView() {
   const [isFreeCam, setIsFreeCam] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -297,4 +138,175 @@ export function PlanetView() {
       </div>
     </div>
   );
+}
+
+/**
+ * Renders a planet with a station marker.
+ */
+function PlanetWithStation() {
+  const planetRef = useRef<THREE.Group>(null);
+  const stationRef = useRef<THREE.Group>(null);
+
+  // Calculate the position of the station on the planet surface
+  const getStationPosition = () => {
+    // Convert from normalized coordinates to spherical coordinates
+    const phi = stationPosition.x * Math.PI * 2; // longitude (0 to 2π)
+    const theta = stationPosition.y * Math.PI; // latitude (0 to π)
+
+    // Convert spherical to cartesian coordinates
+    const x = planetSize * Math.sin(theta) * Math.cos(phi);
+    const y = planetSize * Math.cos(theta);
+    const z = planetSize * Math.sin(theta) * Math.sin(phi);
+
+    return [x, y, z];
+  };
+
+  // Use useFrame hook to rotate the planet
+  useFrame(() => {
+    if (planetRef.current) {
+      // Rotate around Y axis
+      planetRef.current.rotation.y += 0.0005;
+
+      // Update station position to maintain outward direction
+      if (stationRef.current) {
+        const [x, y, z] = getStationPosition();
+        stationRef.current.position.set(x, y, z);
+
+        // Make station point outward from center of planet
+        stationRef.current.lookAt(
+          planetRef.current.position.x,
+          -planetRef.current.position.y,
+          planetRef.current.position.z
+        );
+      }
+    }
+  });
+
+  const [stationX, stationY, stationZ] = getStationPosition();
+
+  return (
+    <group ref={planetRef} position={[orbitRadius, 0, 0]}>
+      {/* Planet - simple sphere with amber color */}
+      <mesh>
+        <sphereGeometry args={[planetSize, planetSize, planetSize]} />
+        <meshBasicMaterial
+          color="#FFB300"
+          wireframe={true}
+          wireframeLinewidth={1}
+        />
+      </mesh>
+
+      {/* Station marker (pointing outward) */}
+      <group ref={stationRef} position={[stationX, stationY, stationZ]}>
+        {/* Base of the marker */}
+        <mesh position={[0, 0, 0]}>
+          <boxGeometry args={[1, 1, 0.5]} />
+          <meshBasicMaterial color="#00ff00" wireframe={true} />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
+/**
+ * Renders a large orbital system with a central sun.
+ */
+function OrbitalSystem() {
+  // Define the orbital parameters
+  const segments = 100; // Enough segments to make it look smooth
+  const sunRef = useRef<THREE.Mesh>(null);
+
+  // Create points for a horizontal circle in XZ plane
+  const points = [];
+  for (let i = 0; i <= segments; i++) {
+    const theta = (i / segments) * Math.PI * 2;
+    // Ensure we're creating valid numbers for the coordinates
+    const x = Math.cos(theta) * orbitRadius;
+    const z = Math.sin(theta) * orbitRadius;
+    points.push(new THREE.Vector3(x, 0, z));
+  }
+
+  // Add rotation animation
+  useFrame(() => {
+    if (sunRef.current) {
+      // Rotate around Y axis
+      sunRef.current.rotation.y += 0.0003;
+    }
+  });
+
+  return (
+    <group position={[0, 0, 0]}>
+      {/* Orbital path - using simple line */}
+      <line>
+        <bufferGeometry>
+          <float32BufferAttribute
+            attach="attributes-position"
+            array={new Float32Array(points.flatMap((p) => [p.x, p.y, p.z]))}
+            count={points.length}
+            itemSize={3}
+            args={[new Float32Array(points.flatMap((p) => [p.x, p.y, p.z])), 3]}
+          />
+        </bufferGeometry>
+        <lineBasicMaterial color="#ffaa00" opacity={0.5} transparent={true} />
+      </line>
+
+      {/* Central sun */}
+      <mesh ref={sunRef}>
+        <sphereGeometry args={[sunSize, sunSize, sunSize]} />
+        <meshBasicMaterial
+          color="#C64523"
+          wireframe={true}
+          wireframeLinewidth={1}
+        />
+      </mesh>
+    </group>
+  );
+}
+
+/**
+ * Controls the camera movement for the orbital cam mode.
+ */
+function CameraController() {
+  const { camera } = useThree();
+  const [cameraAngle, setCameraAngle] = useState(0);
+  const [panPhase, setPanPhase] = useState(0);
+
+  // Modified easing function that spends most time near minimum
+  const modifiedEase = (t: number) => {
+    // Convert input to 0-1 range
+    const normalized = (Math.sin(t) + 1) / 2;
+    // Create a steep curve that spends most time near 0
+    return Math.pow(normalized, 4);
+  };
+
+  useFrame(() => {
+    // Slowly increase the angle
+    setCameraAngle((prev) => prev + 0.0005);
+    // Update pan phase
+    setPanPhase((prev) => prev + 0.0001);
+
+    // Calculate camera position in a circle around the asteroid
+    const minRadius = 50; // Minimum distance from asteroid
+    const maxRadius = 230; // Maximum distance from asteroid
+    const range = maxRadius - minRadius;
+
+    // Apply modified easing function
+    const easedPhase = modifiedEase(panPhase);
+    const radius = minRadius + easedPhase * range;
+
+    // Calculate height based on distance from asteroid
+    const minHeight = 5;
+    const maxHeight = 85;
+    const height = minHeight + easedPhase * (maxHeight - minHeight);
+
+    // Calculate position in a circle around the asteroid
+    const x = orbitRadius + Math.cos(cameraAngle) * radius;
+    const y = height; // Dynamic height based on distance
+    const z = Math.sin(cameraAngle) * radius;
+
+    camera.position.set(x, y, z);
+    camera.lookAt(orbitRadius, 0, 0);
+  });
+
+  return null;
 }

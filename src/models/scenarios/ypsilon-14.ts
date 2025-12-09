@@ -1,7 +1,16 @@
 import { Scenario } from "../scenario";
 import { StationGraphMap } from "../station-graph-map";
 
-// Scenario definitions
+/**
+ * A scenario for the Ypsilon 14 station from "The Haunting of Ypsilon 14".
+ *
+ * https://www.tuesdayknightgames.com/collections/mothership-starter-modules/products/the-haunting-of-ypsilon-14
+ *
+ * Source book credits:
+ * - Written by D G Chapman (GoGoGolf!, Bastard Magic, The Graverobbe's Guide)
+ * - Layout by Sean McCoy (Mothership, Dead Planet, A Pound of Flesh)
+ * - Tuesday Knight Games
+ */
 export const ypsilon14 = (): Scenario => {
   const baseMap = new StationGraphMap({
     levels: [
@@ -223,6 +232,16 @@ export const ypsilon14 = (): Scenario => {
   return scenario;
 };
 
+/**
+ * A scenario for the Ypsilon 14 station from "The Haunting of Ypsilon 14" including the underground mine.
+ *
+ * https://www.tuesdayknightgames.com/collections/mothership-starter-modules/products/the-haunting-of-ypsilon-14
+ *
+ * Source book credits:
+ * - Written by D G Chapman (GoGoGolf!, Bastard Magic, The Graverobbe's Guide)
+ * - Layout by Sean McCoy (Mothership, Dead Planet, A Pound of Flesh)
+ * - Tuesday Knight Games
+ */
 export const ypsilon14WithTunnels = (): Scenario => {
   const baseScenario = ypsilon14();
   const baseMap = baseScenario.map;

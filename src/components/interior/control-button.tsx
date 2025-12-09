@@ -13,6 +13,11 @@ interface ControlButtonProps {
   children?: ReactNode;
 }
 
+/**
+ * A button that can be displayed in the interior view.
+ *
+ * Allows the user to perform actions or toggle states.
+ */
 export function ControlButton({
   label,
   isActive = false,

@@ -21,11 +21,158 @@ export const orbitColor = "#40FECA";
 export const roomHighlight = "#CB133B";
 export const roomConnection = "#CB133B";
 
+/**
+ * Renders a 3D view of The Deep space station and the Bell station orbiting it.
+ *
+ * The view allows switching between fixed view, orbit view, and free cam mode.
+ */
+export function DeepView() {
+  // 0: Fixed View, 1: Orbit View, 2: Free Cam
+  const [cameraMode, setCameraMode] = useState(0);
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const isMobile = useMobile();
+  const { scenario: currentMap } = useScenario();
+
+  // Handle touch events to prevent scrolling issues on mobile
+  useEffect(() => {
+    const canvasElement = canvasRef.current;
+    if (!canvasElement) return;
+
+    const preventScroll = (e: TouchEvent) => {
+      if (cameraMode === 2) {
+        // Only prevent default if in free cam mode
+        e.preventDefault();
+      }
+    };
+
+    // Add touch event listeners
+    canvasElement.addEventListener("touchmove", preventScroll, {
+      passive: false,
+    });
+
+    return () => {
+      // Clean up event listeners
+      canvasElement.removeEventListener("touchmove", preventScroll);
+    };
+  }, [cameraMode]);
+
+  const toggleCameraMode = () => {
+    setCameraMode((prev) => (prev + 1) % 3);
+  };
+
+  const getCameraModeText = () => {
+    switch (cameraMode) {
+      case 0:
+        return "FIXED VIEW";
+      case 1:
+        return "ORBIT VIEW";
+      case 2:
+        return "FREE CAM";
+      default:
+        return "FIXED VIEW";
+    }
+  };
+
+  return (
+    <div className="border border-primary p-2 md:p-4 w-full h-full relative overflow-hidden">
+      <div className="absolute top-2 left-2 z-10">
+        <h2 className="text-lg md:text-xl font-bold">
+          {currentMap.name} - EXTERIOR VIEW
+        </h2>
+        <p className="text-xs md:text-sm">STATUS: BLOCKADED</p>
+      </div>
+      <div
+        ref={canvasRef}
+        className="w-full h-full"
+        style={{ touchAction: cameraMode === 2 ? "none" : "auto" }}
+      >
+        <Canvas
+          gl={{
+            powerPreference: "high-performance",
+            antialias: true,
+            stencil: false,
+            depth: true,
+            failIfMajorPerformanceCaveat: false,
+          }}
+          camera={{
+            near: 0.1,
+            far: 10000,
+          }}
+          onCreated={({ gl }) => {
+            gl.setClearColor(new THREE.Color("#000000"));
+          }}
+        >
+          <PerspectiveCamera
+            makeDefault
+            position={[orbitRadius + 50, 30, 0]}
+            fov={isMobile ? 40 : 30}
+          />
+          <ambientLight intensity={0.5} />
+          <pointLight position={[10, 10, 10]} />
+
+          <DeepStation showSectors={true} />
+          <BellStation orbit={true} />
+          <OrbitalPath />
+          <Stars
+            radius={500}
+            depth={50}
+            count={25000}
+            factor={25}
+            saturation={0}
+            fade
+            speed={1}
+          />
+
+          {cameraMode === 0 && <FixedCameraController />}
+          {cameraMode === 1 && <OrbitCameraController />}
+          <OrbitControls
+            enableZoom={true}
+            enablePan={true}
+            enableRotate={true}
+            zoomSpeed={0.6}
+            panSpeed={0.5}
+            rotateSpeed={0.2}
+            target={[0, 0, 0]}
+            enabled={cameraMode === 2}
+            enableDamping={false}
+          />
+        </Canvas>
+      </div>
+      <div className="absolute top-2 right-2 z-10">
+        <button
+          onClick={toggleCameraMode}
+          className={`px-2 md:px-3 py-1 rounded text-xs md:text-sm font-bold ${
+            cameraMode === 2
+              ? "bg-primary text-black"
+              : "bg-black text-primary border border-primary"
+          }`}
+        >
+          {getCameraModeText()}
+        </button>
+      </div>
+      <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 right-2 md:right-4 border border-primary bg-black/90 p-2 md:p-4">
+        <div className="flex justify-between items-center">
+          <h3 className="font-bold text-sm md:text-lg">FACILITY STATUS</h3>
+          <div className="px-1 md:px-2 py-0.5 md:py-1 rounded bg-red-500 text-black uppercase font-bold text-[10px] md:text-xs">
+            DANGER ZONE
+          </div>
+        </div>
+        <p className="text-xs md:text-base mt-1 md:mt-2">
+          Property of CLOUDBANK. Facility is under blockade. No access allowed.
+          Intruders will be prosecuted.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export const orbitRadius = 400; // Distance of The Bell from The Deep
 // Base horizontal angle for fixed camera view (radians)
 export const FIXED_VIEW_BASE_YAW = -1.5;
 
-// Create The Deep space station with its distinct levels
+/**
+ * Renders the The Deep space station with its distinct levels.
+ */
 export function DeepStation({ showSectors }: { showSectors: boolean }) {
   const stationRef = useRef<THREE.Group>(null);
   const { selectedPOI } = usePoi();
@@ -433,7 +580,9 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
   );
 }
 
-// Simple line component to connect nodes
+/**
+ * Simple line component to connect nodes.
+ */
 export function Line({
   points,
   color,
@@ -457,7 +606,9 @@ export function Line({
   );
 }
 
-// Create The Bell - smaller station that orbits The Deep
+/**
+ * Renders the Bell station - smaller station that orbits The Deep.
+ */
 export function BellStation({ orbit = false }: { orbit?: boolean }) {
   const bellRef = useRef<THREE.Group>(null);
   const [selfRotation, setSelfRotation] = useState(0);
@@ -498,7 +649,9 @@ export function BellStation({ orbit = false }: { orbit?: boolean }) {
   );
 }
 
-// Create orbital path for The Bell
+/**
+ * Creates an orbital path for The Bell.
+ */
 export function OrbitalPath() {
   // Define the orbital parameters
   const segments = 100; // Enough segments to make it look smooth
@@ -528,6 +681,9 @@ export function OrbitalPath() {
   );
 }
 
+/**
+ * Controls the camera movement for the fixed cam mode.
+ */
 function FixedCameraController() {
   const { camera, scene } = useThree();
   const orbitRef = useRef(0);
@@ -563,6 +719,9 @@ function FixedCameraController() {
   return null;
 }
 
+/**
+ * Controls the camera movement for the orbit cam mode.
+ */
 function OrbitCameraController() {
   const { camera } = useThree();
   const [cameraAngle, setCameraAngle] = useState(0);
@@ -597,144 +756,4 @@ function OrbitCameraController() {
   });
 
   return null;
-}
-
-export function DeepView() {
-  // 0: Fixed View, 1: Orbit View, 2: Free Cam
-  const [cameraMode, setCameraMode] = useState(0);
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const isMobile = useMobile();
-  const { scenario: currentMap } = useScenario();
-
-  // Handle touch events to prevent scrolling issues on mobile
-  useEffect(() => {
-    const canvasElement = canvasRef.current;
-    if (!canvasElement) return;
-
-    const preventScroll = (e: TouchEvent) => {
-      if (cameraMode === 2) {
-        // Only prevent default if in free cam mode
-        e.preventDefault();
-      }
-    };
-
-    // Add touch event listeners
-    canvasElement.addEventListener("touchmove", preventScroll, {
-      passive: false,
-    });
-
-    return () => {
-      // Clean up event listeners
-      canvasElement.removeEventListener("touchmove", preventScroll);
-    };
-  }, [cameraMode]);
-
-  const toggleCameraMode = () => {
-    setCameraMode((prev) => (prev + 1) % 3);
-  };
-
-  const getCameraModeText = () => {
-    switch (cameraMode) {
-      case 0:
-        return "FIXED VIEW";
-      case 1:
-        return "ORBIT VIEW";
-      case 2:
-        return "FREE CAM";
-      default:
-        return "FIXED VIEW";
-    }
-  };
-
-  return (
-    <div className="border border-primary p-2 md:p-4 w-full h-full relative overflow-hidden">
-      <div className="absolute top-2 left-2 z-10">
-        <h2 className="text-lg md:text-xl font-bold">
-          {currentMap.name} - EXTERIOR VIEW
-        </h2>
-        <p className="text-xs md:text-sm">STATUS: BLOCKADED</p>
-      </div>
-      <div
-        ref={canvasRef}
-        className="w-full h-full"
-        style={{ touchAction: cameraMode === 2 ? "none" : "auto" }}
-      >
-        <Canvas
-          gl={{
-            powerPreference: "high-performance",
-            antialias: true,
-            stencil: false,
-            depth: true,
-            failIfMajorPerformanceCaveat: false,
-          }}
-          camera={{
-            near: 0.1,
-            far: 10000,
-          }}
-          onCreated={({ gl }) => {
-            gl.setClearColor(new THREE.Color("#000000"));
-          }}
-        >
-          <PerspectiveCamera
-            makeDefault
-            position={[orbitRadius + 50, 30, 0]}
-            fov={isMobile ? 40 : 30}
-          />
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} />
-
-          <DeepStation showSectors={true} />
-          <BellStation orbit={true} />
-          <OrbitalPath />
-          <Stars
-            radius={500}
-            depth={50}
-            count={25000}
-            factor={25}
-            saturation={0}
-            fade
-            speed={1}
-          />
-
-          {cameraMode === 0 && <FixedCameraController />}
-          {cameraMode === 1 && <OrbitCameraController />}
-          <OrbitControls
-            enableZoom={true}
-            enablePan={true}
-            enableRotate={true}
-            zoomSpeed={0.6}
-            panSpeed={0.5}
-            rotateSpeed={0.2}
-            target={[0, 0, 0]}
-            enabled={cameraMode === 2}
-            enableDamping={false}
-          />
-        </Canvas>
-      </div>
-      <div className="absolute top-2 right-2 z-10">
-        <button
-          onClick={toggleCameraMode}
-          className={`px-2 md:px-3 py-1 rounded text-xs md:text-sm font-bold ${
-            cameraMode === 2
-              ? "bg-primary text-black"
-              : "bg-black text-primary border border-primary"
-          }`}
-        >
-          {getCameraModeText()}
-        </button>
-      </div>
-      <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 right-2 md:right-4 border border-primary bg-black/90 p-2 md:p-4">
-        <div className="flex justify-between items-center">
-          <h3 className="font-bold text-sm md:text-lg">FACILITY STATUS</h3>
-          <div className="px-1 md:px-2 py-0.5 md:py-1 rounded bg-red-500 text-black uppercase font-bold text-[10px] md:text-xs">
-            DANGER ZONE
-          </div>
-        </div>
-        <p className="text-xs md:text-base mt-1 md:mt-2">
-          Property of CLOUDBANK. Facility is under blockade. No access allowed.
-          Intruders will be prosecuted.
-        </p>
-      </div>
-    </div>
-  );
 }

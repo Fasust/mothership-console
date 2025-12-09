@@ -62,7 +62,180 @@ const POI_POSITIONS: Record<ProsperoPOI, [number, number, number]> = {
   [POI_ID.CHOKE]: [0, -10, 0], // Lower part of the central spire
 };
 
-// Create the Prospero's Dream station model
+/**
+ * Renders a 3D view of Prospero's Dream.
+ *
+ * The view allows switching between fixed view, orbit view, and free cam mode.
+ */
+export function ProsperosDreamView({
+  viewAngle = "default",
+}: {
+  viewAngle?: ViewAngle;
+}) {
+  // Change from boolean to numeric state for multiple camera modes
+  // 0: Fixed View, 1: Orbit View, 2: Free Cam
+  const [cameraMode, setCameraMode] = useState(0);
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const isMobile = useMobile();
+  const { scenario: currentMap } = useScenario();
+  const { selectedPOI } = usePoi();
+  const pointsOfInterest = currentMap.pointsOfInterest || [];
+
+  // Function to cycle through camera modes
+  const toggleCameraMode = () => {
+    setCameraMode((prev) => (prev + 1) % 3);
+  };
+
+  // Calculate if free cam is enabled (only in mode 2)
+  const isFreeCam = cameraMode === 2;
+
+  // Handle touch events to prevent scrolling issues on mobile
+  useEffect(() => {
+    const canvasElement = canvasRef.current;
+    if (!canvasElement) return;
+
+    const preventScroll = (e: TouchEvent) => {
+      if (isFreeCam) {
+        // Only prevent default if in free cam mode
+        e.preventDefault();
+      }
+    };
+
+    // Add touch event listeners
+    canvasElement.addEventListener("touchmove", preventScroll, {
+      passive: false,
+    });
+
+    return () => {
+      // Clean up event listeners
+      canvasElement.removeEventListener("touchmove", preventScroll);
+    };
+  }, [isFreeCam]);
+
+  // Get the camera mode display text
+  const getCameraModeText = () => {
+    switch (cameraMode) {
+      case 0:
+        return "FIXED VIEW";
+      case 1:
+        return "ORBIT VIEW";
+      case 2:
+        return "FREE CAM";
+      default:
+        return "FIXED VIEW";
+    }
+  };
+
+  const rotateStation =
+    cameraMode !== 0 || (cameraMode === 0 && viewAngle === "top");
+
+  return (
+    <div className="border border-primary p-2 md:p-4 w-full h-full relative overflow-hidden">
+      <div className="absolute top-2 left-2 z-10">
+        <h2 className="text-lg md:text-xl font-bold">
+          {currentMap.name} - EXTERIOR VIEW
+        </h2>
+        <p className="text-xs md:text-sm crt-effect">
+          INTERGALACTIC CLASSIFICATION: LAWLESS
+        </p>
+      </div>
+
+      <div
+        ref={canvasRef}
+        className="w-full h-full"
+        style={{ touchAction: isFreeCam ? "none" : "auto" }}
+      >
+        <Canvas
+          gl={{
+            powerPreference: "high-performance",
+            antialias: true,
+            stencil: false,
+            depth: true,
+            failIfMajorPerformanceCaveat: false,
+          }}
+          camera={{
+            near: 0.1,
+            far: 10000,
+          }}
+          onCreated={({ gl }) => {
+            gl.setClearColor(new THREE.Color("#000000"));
+          }}
+        >
+          <ambientLight intensity={0.5} />
+          <pointLight position={[10, 10, 10]} />
+
+          <ProsperosDreamStation rotate={rotateStation} />
+          <OrbitalSystem />
+          <group position={[ORBIT_RADIUS, 0, 0]}>
+            <Stars
+              radius={500}
+              depth={50}
+              count={25000}
+              factor={25}
+              saturation={0}
+              fade
+              speed={1}
+            />
+          </group>
+
+          <PerspectiveCamera
+            makeDefault
+            position={[ORBIT_RADIUS + 150, 80, 0]}
+            fov={isMobile ? 40 : 30}
+          />
+          {cameraMode === 0 && <FixedCameraController viewAngle={viewAngle} />}
+          {cameraMode === 1 && <OrbitCameraController />}
+          <OrbitControls
+            enableZoom={true}
+            enablePan={true}
+            enableRotate={true}
+            zoomSpeed={0.6}
+            panSpeed={0.5}
+            rotateSpeed={0.2}
+            target={[ORBIT_RADIUS, 0, 0]}
+            enabled={isFreeCam}
+            enableDamping={false}
+          />
+        </Canvas>
+      </div>
+
+      <div className="absolute top-2 right-2 z-10">
+        <button
+          onClick={toggleCameraMode}
+          className={`px-2 md:px-3 py-1 rounded text-xs md:text-sm font-bold ${
+            cameraMode === 2
+              ? "bg-primary text-black"
+              : "bg-black text-primary border border-primary"
+          }`}
+        >
+          {getCameraModeText()}
+        </button>
+      </div>
+      {selectedPOI && (
+        <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 right-2 md:right-4 border border-primary bg-black/90 p-2 md:p-4">
+          <div className="flex justify-between items-center">
+            <h3 className="font-bold text-sm md:text-lg">
+              {
+                pointsOfInterest.find((poi) => poi.id === selectedPOI)
+                  ?.user_facing_id
+              }{" "}
+              {pointsOfInterest.find((poi) => poi.id === selectedPOI)?.name ||
+                ""}{" "}
+            </h3>
+          </div>
+          <p className="text-xs md:text-base mt-1 md:mt-2">
+            {pointsOfInterest.find((poi) => poi.id === selectedPOI)
+              ?.description || ""}{" "}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Renders the Prospero's Dream station model.
+ */
 function ProsperosDreamStation({ rotate = false }: { rotate?: boolean }) {
   const { selectedPOI } = usePoi();
   const { scenario } = useScenario();
@@ -496,7 +669,9 @@ function ProsperosDreamStation({ rotate = false }: { rotate?: boolean }) {
   );
 }
 
-// Create a large orbital system with a central sun
+/**
+ * Renders a large orbital system with a central sun.
+ */
 function OrbitalSystem() {
   // Define the orbital parameters
   const segments = 100; // Enough segments to make it look smooth
@@ -549,175 +724,11 @@ function OrbitalSystem() {
   );
 }
 
-export function ProsperosDreamView({
-  viewAngle = "default",
-}: {
-  viewAngle?: ViewAngle;
-}) {
-  // Change from boolean to numeric state for multiple camera modes
-  // 0: Fixed View, 1: Orbit View, 2: Free Cam
-  const [cameraMode, setCameraMode] = useState(0);
-  const canvasRef = useRef<HTMLDivElement>(null);
-  const isMobile = useMobile();
-  const { scenario: currentMap } = useScenario();
-  const { selectedPOI } = usePoi();
-  const pointsOfInterest = currentMap.pointsOfInterest || [];
-
-  // Function to cycle through camera modes
-  const toggleCameraMode = () => {
-    setCameraMode((prev) => (prev + 1) % 3);
-  };
-
-  // Calculate if free cam is enabled (only in mode 2)
-  const isFreeCam = cameraMode === 2;
-
-  // Handle touch events to prevent scrolling issues on mobile
-  useEffect(() => {
-    const canvasElement = canvasRef.current;
-    if (!canvasElement) return;
-
-    const preventScroll = (e: TouchEvent) => {
-      if (isFreeCam) {
-        // Only prevent default if in free cam mode
-        e.preventDefault();
-      }
-    };
-
-    // Add touch event listeners
-    canvasElement.addEventListener("touchmove", preventScroll, {
-      passive: false,
-    });
-
-    return () => {
-      // Clean up event listeners
-      canvasElement.removeEventListener("touchmove", preventScroll);
-    };
-  }, [isFreeCam]);
-
-  // Get the camera mode display text
-  const getCameraModeText = () => {
-    switch (cameraMode) {
-      case 0:
-        return "FIXED VIEW";
-      case 1:
-        return "ORBIT VIEW";
-      case 2:
-        return "FREE CAM";
-      default:
-        return "FIXED VIEW";
-    }
-  };
-
-  const rotateStation =
-    cameraMode !== 0 || (cameraMode === 0 && viewAngle === "top");
-
-  return (
-    <div className="border border-primary p-2 md:p-4 w-full h-full relative overflow-hidden">
-      <div className="absolute top-2 left-2 z-10">
-        <h2 className="text-lg md:text-xl font-bold">
-          {currentMap.name} - EXTERIOR VIEW
-        </h2>
-        <p className="text-xs md:text-sm crt-effect">
-          INTERGALACTIC CLASSIFICATION: LAWLESS
-        </p>
-      </div>
-
-      <div
-        ref={canvasRef}
-        className="w-full h-full"
-        style={{ touchAction: isFreeCam ? "none" : "auto" }}
-      >
-        <Canvas
-          gl={{
-            powerPreference: "high-performance",
-            antialias: true,
-            stencil: false,
-            depth: true,
-            failIfMajorPerformanceCaveat: false,
-          }}
-          camera={{
-            near: 0.1,
-            far: 10000,
-          }}
-          onCreated={({ gl }) => {
-            gl.setClearColor(new THREE.Color("#000000"));
-          }}
-        >
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} />
-
-          <ProsperosDreamStation rotate={rotateStation} />
-          <OrbitalSystem />
-          <group position={[ORBIT_RADIUS, 0, 0]}>
-            <Stars
-              radius={500}
-              depth={50}
-              count={25000}
-              factor={25}
-              saturation={0}
-              fade
-              speed={1}
-            />
-          </group>
-
-          <PerspectiveCamera
-            makeDefault
-            position={[ORBIT_RADIUS + 150, 80, 0]}
-            fov={isMobile ? 40 : 30}
-          />
-          {cameraMode === 0 && <FixedCameraController viewAngle={viewAngle} />}
-          {cameraMode === 1 && <OrbitCameraController />}
-          <OrbitControls
-            enableZoom={true}
-            enablePan={true}
-            enableRotate={true}
-            zoomSpeed={0.6}
-            panSpeed={0.5}
-            rotateSpeed={0.2}
-            target={[ORBIT_RADIUS, 0, 0]}
-            enabled={isFreeCam}
-            enableDamping={false}
-          />
-        </Canvas>
-      </div>
-
-      <div className="absolute top-2 right-2 z-10">
-        <button
-          onClick={toggleCameraMode}
-          className={`px-2 md:px-3 py-1 rounded text-xs md:text-sm font-bold ${
-            cameraMode === 2
-              ? "bg-primary text-black"
-              : "bg-black text-primary border border-primary"
-          }`}
-        >
-          {getCameraModeText()}
-        </button>
-      </div>
-      {selectedPOI && (
-        <div className="absolute bottom-2 md:bottom-4 left-2 md:left-4 right-2 md:right-4 border border-primary bg-black/90 p-2 md:p-4">
-          <div className="flex justify-between items-center">
-            <h3 className="font-bold text-sm md:text-lg">
-              {
-                pointsOfInterest.find((poi) => poi.id === selectedPOI)
-                  ?.user_facing_id
-              }{" "}
-              {pointsOfInterest.find((poi) => poi.id === selectedPOI)?.name ||
-                ""}{" "}
-            </h3>
-          </div>
-          <p className="text-xs md:text-base mt-1 md:mt-2">
-            {pointsOfInterest.find((poi) => poi.id === selectedPOI)
-              ?.description || ""}{" "}
-          </p>
-        </div>
-      )}
-    </div>
-  );
-}
-
 // Split camera controllers into separate components for each mode
 
-// Fixed camera mode - Camera rotates around the station
+/**
+ * Controls the camera movement for the fixed cam mode.
+ */
 function FixedCameraController({ viewAngle }: { viewAngle: ViewAngle }) {
   const { camera, scene } = useThree();
   const orbitRef = useRef(0);
@@ -790,7 +801,9 @@ function FixedCameraController({ viewAngle }: { viewAngle: ViewAngle }) {
   return null;
 }
 
-// Orbit camera mode - Camera stays fixed while station orbits
+/**
+ * Controls the camera movement for the orbit cam mode.
+ */
 function OrbitCameraController() {
   const { camera } = useThree();
   const [cameraAngle, setCameraAngle] = useState(0);

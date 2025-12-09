@@ -5,6 +5,11 @@ import { Droplets, Thermometer, Wind, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { LiveChart } from "./live-chart";
 
+/**
+ * Renders a panel of charts about the station.
+ *
+ * Uses the scenario.charts property to display the charts.
+ */
 export function InteriorCharts({
   chartTypes = ["oxygen", "temperature"],
 }: {

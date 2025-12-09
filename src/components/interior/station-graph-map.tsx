@@ -4,7 +4,12 @@ import { useScenario } from "@/src/context/scenario-context";
 import type { RoomDefinition, RoomId } from "@/src/models/station-graph-map";
 import { type JSX, useEffect, useState } from "react";
 
-export function StationMap() {
+/**
+ * Renders a graph map of the station.
+ *
+ * Uses the scenario.map property to display the graph map.
+ */
+export function StationGraphMap() {
   const { scenario, map, activeRooms, airlockStates } = useScenario();
   if (!map) return <div>Loading...</div>;
 
