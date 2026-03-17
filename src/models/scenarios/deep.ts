@@ -86,9 +86,13 @@ export const bellStation = (): Scenario => {
  * - Layout by Sean McCoy
  * - Tuesday Knight Games
  */
-export const deepStation = (): Scenario => {
+export const deepStation = ({
+  withAIcore = true,
+}: {
+  withAIcore: boolean;
+}): Scenario => {
   const scenario: Scenario = {
-    id: "DEEP STATION",
+    id: `DEEP STATION ${withAIcore ? "" : "(NO AI CORE)"}`,
     name: "THE DEEP",
     type: "deep",
     crew: { current: 120, capacity: 5500 },
@@ -179,13 +183,16 @@ export const deepStation = (): Scenario => {
         name: "Human Emulation Lab",
         description: "Laboratory for human emulation research.",
       },
-
-      {
-        id: POI_ID.DEEP_AI_CORE,
-        user_facing_id: "5",
-        name: "AI Core",
-        description: "Secondary pillar housing the central AI core.",
-      },
+      ...(withAIcore
+        ? [
+            {
+              id: POI_ID.DEEP_AI_CORE,
+              user_facing_id: "5",
+              name: "AI Core",
+              description: "Secondary pillar housing the central AI core.",
+            },
+          ]
+        : []),
       {
         id: POI_ID.DEEP_ENGINEERING_AND_SUPPORT,
         user_facing_id: "6",

@@ -62,7 +62,8 @@ export const allScenarios = [
   ypsilon14WithTunnels(),
   gretaBase(),
   bellStation(),
-  deepStation(),
+  deepStation({ withAIcore: true }),
+  deepStation({ withAIcore: false }),
   prosperosDream(),
   rsvFidanza(),
 ];

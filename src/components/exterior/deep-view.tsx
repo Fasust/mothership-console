@@ -170,41 +170,58 @@ export const orbitRadius = 400; // Distance of The Bell from The Deep
 // Base horizontal angle for fixed camera view (radians)
 export const FIXED_VIEW_BASE_YAW = -1.5;
 
+/** All possible Deep POI IDs (for type narrowing) */
+const AllDeepPOIIds = [
+  POI_ID.DEEP_RECEPTION_LANDING,
+  POI_ID.DEEP_EXEC_LOUNGE,
+  POI_ID.DEEP_PSEUDOFLESH_FARMS,
+  POI_ID.DEEP_AI_CORE,
+  POI_ID.DEEP_SKELETON_WORKS,
+  POI_ID.DEEP_STORAGE,
+  POI_ID.DEEP_DIS_ASSEMBLY,
+  POI_ID.DEEP_QA,
+  POI_ID.DEEP_MAINTAINANCE,
+  POI_ID.DEEP_BRAIN_CONSTRUCTION,
+  POI_ID.DEEP_HUMAN_EMULATION_LAB,
+  POI_ID.DEEP_ENGINEERING_AND_SUPPORT,
+] as const;
+
+type DeepPOI = (typeof AllDeepPOIIds)[number];
+
+/** All possible Deep connections - filtered by scenario at runtime */
+const ALL_DEEP_CONNECTIONS: [DeepPOI, DeepPOI][] = [
+  [POI_ID.DEEP_RECEPTION_LANDING, POI_ID.DEEP_EXEC_LOUNGE],
+  [POI_ID.DEEP_EXEC_LOUNGE, POI_ID.DEEP_MAINTAINANCE],
+  [POI_ID.DEEP_MAINTAINANCE, POI_ID.DEEP_PSEUDOFLESH_FARMS],
+  [POI_ID.DEEP_PSEUDOFLESH_FARMS, POI_ID.DEEP_AI_CORE],
+  [POI_ID.DEEP_MAINTAINANCE, POI_ID.DEEP_SKELETON_WORKS],
+  [POI_ID.DEEP_MAINTAINANCE, POI_ID.DEEP_BRAIN_CONSTRUCTION],
+  [POI_ID.DEEP_MAINTAINANCE, POI_ID.DEEP_DIS_ASSEMBLY],
+  [POI_ID.DEEP_DIS_ASSEMBLY, POI_ID.DEEP_STORAGE],
+  [POI_ID.DEEP_STORAGE, POI_ID.DEEP_ENGINEERING_AND_SUPPORT],
+  [POI_ID.DEEP_MAINTAINANCE, POI_ID.DEEP_QA],
+  [POI_ID.DEEP_ENGINEERING_AND_SUPPORT, POI_ID.DEEP_HUMAN_EMULATION_LAB],
+  [POI_ID.DEEP_RECEPTION_LANDING, POI_ID.DEEP_HUMAN_EMULATION_LAB],
+];
+
 /**
  * Renders the The Deep space station with its distinct levels.
  */
 export function DeepStation({ showSectors }: { showSectors: boolean }) {
   const stationRef = useRef<THREE.Group>(null);
   const { selectedPOI } = usePoi();
+  const { scenario } = useScenario();
 
-  type DeepPOI =
-    | POI_ID.DEEP_RECEPTION_LANDING
-    | POI_ID.DEEP_EXEC_LOUNGE
-    | POI_ID.DEEP_PSEUDOFLESH_FARMS
-    | POI_ID.DEEP_AI_CORE
-    | POI_ID.DEEP_SKELETON_WORKS
-    | POI_ID.DEEP_STORAGE
-    | POI_ID.DEEP_DIS_ASSEMBLY
-    | POI_ID.DEEP_QA
-    | POI_ID.DEEP_MAINTAINANCE
-    | POI_ID.DEEP_BRAIN_CONSTRUCTION
-    | POI_ID.DEEP_HUMAN_EMULATION_LAB
-    | POI_ID.DEEP_ENGINEERING_AND_SUPPORT;
+  // Use only POIs defined by the active scenario (e.g. with/without AI Core)
+  const DEEP_POI_IDS = (scenario.pointsOfInterest ?? [])
+    .map((p) => p.id)
+    .filter((id): id is DeepPOI => AllDeepPOIIds.includes(id as DeepPOI));
 
-  const DEEP_POI_IDS: DeepPOI[] = [
-    POI_ID.DEEP_RECEPTION_LANDING,
-    POI_ID.DEEP_EXEC_LOUNGE,
-    POI_ID.DEEP_PSEUDOFLESH_FARMS,
-    POI_ID.DEEP_AI_CORE,
-    POI_ID.DEEP_SKELETON_WORKS,
-    POI_ID.DEEP_STORAGE,
-    POI_ID.DEEP_DIS_ASSEMBLY,
-    POI_ID.DEEP_QA,
-    POI_ID.DEEP_MAINTAINANCE,
-    POI_ID.DEEP_BRAIN_CONSTRUCTION,
-    POI_ID.DEEP_HUMAN_EMULATION_LAB,
-    POI_ID.DEEP_ENGINEERING_AND_SUPPORT,
-  ];
+  const activePoiSet = new Set<POI_ID>(DEEP_POI_IDS);
+
+  const CONNECTIONS = ALL_DEEP_CONNECTIONS.filter(
+    ([a, b]) => activePoiSet.has(a) && activePoiSet.has(b),
+  );
 
   const isDeepPoi = (id: POI_ID | null): id is DeepPOI =>
     id !== null && DEEP_POI_IDS.includes(id as DeepPOI);
@@ -242,23 +259,6 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
     ENGENIERING_AND_SUPPORT: [0, -128, 0],
   };
 
-  // Define POI connectivity (undirected edges)
-  const CONNECTIONS: [DeepPOI, DeepPOI][] = [
-    [POI_ID.DEEP_RECEPTION_LANDING, POI_ID.DEEP_EXEC_LOUNGE],
-    [POI_ID.DEEP_EXEC_LOUNGE, POI_ID.DEEP_MAINTAINANCE],
-    [POI_ID.DEEP_MAINTAINANCE, POI_ID.DEEP_PSEUDOFLESH_FARMS],
-    [POI_ID.DEEP_PSEUDOFLESH_FARMS, POI_ID.DEEP_AI_CORE],
-    [POI_ID.DEEP_MAINTAINANCE, POI_ID.DEEP_SKELETON_WORKS],
-    [POI_ID.DEEP_MAINTAINANCE, POI_ID.DEEP_BRAIN_CONSTRUCTION],
-    [POI_ID.DEEP_MAINTAINANCE, POI_ID.DEEP_DIS_ASSEMBLY],
-    [POI_ID.DEEP_DIS_ASSEMBLY, POI_ID.DEEP_STORAGE],
-    [POI_ID.DEEP_STORAGE, POI_ID.DEEP_ENGINEERING_AND_SUPPORT],
-    [POI_ID.DEEP_MAINTAINANCE, POI_ID.DEEP_QA],
-    [POI_ID.DEEP_ENGINEERING_AND_SUPPORT, POI_ID.DEEP_HUMAN_EMULATION_LAB],
-    // Additional explicit connection added by user
-    [POI_ID.DEEP_RECEPTION_LANDING, POI_ID.DEEP_HUMAN_EMULATION_LAB],
-  ];
-
   const adjacency = new Map<DeepPOI, Set<DeepPOI>>();
   for (const id of DEEP_POI_IDS) adjacency.set(id, new Set());
   CONNECTIONS.forEach(([a, b]) => {
@@ -282,7 +282,7 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
       : unconnectedNodeOpacity;
   };
 
-  const getLineOpacity = (a: DeepPOI, b: DeepPOI): number => {
+  const getLineOpacity = (a: POI_ID, b: POI_ID): number => {
     if (!activeSelectedPOI) return lineOpacityFull;
     if (a === activeSelectedPOI || b === activeSelectedPOI)
       return lineOpacityFull;
@@ -385,7 +385,7 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
           <meshBasicMaterial color={theDeepColor} wireframe={true} />
         </mesh>
 
-        {/* Connection nodes - red dots at key intersections */}
+        {/* Connection nodes - red dots at key intersections (only scenario POIs) */}
         {showSectors &&
           (
             [
@@ -420,20 +420,22 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
                 id: POI_ID.DEEP_ENGINEERING_AND_SUPPORT,
               },
             ] as { pos: [number, number, number]; id: POI_ID }[]
-          ).map(({ pos, id }, i) => {
-            const opacity = getNodeOpacity(id as DeepPOI);
-            return (
-              <mesh key={i} position={pos}>
-                <sphereGeometry args={[5, 16, 16]} />
-                <meshBasicMaterial
-                  color={roomHighlight}
-                  wireframe={false}
-                  transparent={true}
-                  opacity={opacity}
-                />
-              </mesh>
-            );
-          })}
+          )
+            .filter(({ id }) => activePoiSet.has(id))
+            .map(({ pos, id }, i) => {
+              const opacity = getNodeOpacity(id as DeepPOI);
+              return (
+                <mesh key={i} position={pos}>
+                  <sphereGeometry args={[5, 16, 16]} />
+                  <meshBasicMaterial
+                    color={roomHighlight}
+                    wireframe={false}
+                    transparent={true}
+                    opacity={opacity}
+                  />
+                </mesh>
+              );
+            })}
 
         {/* Connection tubes between nodes - updated to match image network */}
         {showSectors && (
@@ -447,7 +449,7 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
               lineWidth={1}
               opacity={getLineOpacity(
                 POI_ID.DEEP_RECEPTION_LANDING,
-                POI_ID.DEEP_EXEC_LOUNGE
+                POI_ID.DEEP_EXEC_LOUNGE,
               )}
             />
 
@@ -467,7 +469,7 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
               lineWidth={1}
               opacity={getLineOpacity(
                 POI_ID.DEEP_EXEC_LOUNGE,
-                POI_ID.DEEP_MAINTAINANCE
+                POI_ID.DEEP_MAINTAINANCE,
               )}
             />
 
@@ -477,19 +479,21 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
               lineWidth={1}
               opacity={getLineOpacity(
                 POI_ID.DEEP_MAINTAINANCE,
-                POI_ID.DEEP_PSEUDOFLESH_FARMS
+                POI_ID.DEEP_PSEUDOFLESH_FARMS,
               )}
             />
 
-            <Line
-              points={[POSITIONS.PSEUDOFELSH_FARMS, POSITIONS.AI_CORE]}
-              color={roomConnection}
-              lineWidth={1}
-              opacity={getLineOpacity(
-                POI_ID.DEEP_PSEUDOFLESH_FARMS,
-                POI_ID.DEEP_AI_CORE
-              )}
-            />
+            {activePoiSet.has(POI_ID.DEEP_AI_CORE) && (
+              <Line
+                points={[POSITIONS.PSEUDOFELSH_FARMS, POSITIONS.AI_CORE]}
+                color={roomConnection}
+                lineWidth={1}
+                opacity={getLineOpacity(
+                  POI_ID.DEEP_PSEUDOFLESH_FARMS,
+                  POI_ID.DEEP_AI_CORE,
+                )}
+              />
+            )}
 
             <Line
               points={[POSITIONS.MAINTAINANCE, POSITIONS.SKELETON_WORKS]}
@@ -497,7 +501,7 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
               lineWidth={1}
               opacity={getLineOpacity(
                 POI_ID.DEEP_MAINTAINANCE,
-                POI_ID.DEEP_SKELETON_WORKS
+                POI_ID.DEEP_SKELETON_WORKS,
               )}
             />
 
@@ -507,7 +511,7 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
               lineWidth={1}
               opacity={getLineOpacity(
                 POI_ID.DEEP_MAINTAINANCE,
-                POI_ID.DEEP_BRAIN_CONSTRUCTION
+                POI_ID.DEEP_BRAIN_CONSTRUCTION,
               )}
             />
 
@@ -517,7 +521,7 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
               lineWidth={1}
               opacity={getLineOpacity(
                 POI_ID.DEEP_MAINTAINANCE,
-                POI_ID.DEEP_DIS_ASSEMBLY
+                POI_ID.DEEP_DIS_ASSEMBLY,
               )}
             />
 
@@ -527,7 +531,7 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
               lineWidth={1}
               opacity={getLineOpacity(
                 POI_ID.DEEP_DIS_ASSEMBLY,
-                POI_ID.DEEP_STORAGE
+                POI_ID.DEEP_STORAGE,
               )}
             />
 
@@ -537,7 +541,7 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
               lineWidth={1}
               opacity={getLineOpacity(
                 POI_ID.DEEP_STORAGE,
-                POI_ID.DEEP_ENGINEERING_AND_SUPPORT
+                POI_ID.DEEP_ENGINEERING_AND_SUPPORT,
               )}
             />
 
@@ -557,7 +561,7 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
               lineWidth={1}
               opacity={getLineOpacity(
                 POI_ID.DEEP_ENGINEERING_AND_SUPPORT,
-                POI_ID.DEEP_HUMAN_EMULATION_LAB
+                POI_ID.DEEP_HUMAN_EMULATION_LAB,
               )}
             />
 
@@ -570,7 +574,7 @@ export function DeepStation({ showSectors }: { showSectors: boolean }) {
               lineWidth={1}
               opacity={getLineOpacity(
                 POI_ID.DEEP_RECEPTION_LANDING,
-                POI_ID.DEEP_HUMAN_EMULATION_LAB
+                POI_ID.DEEP_HUMAN_EMULATION_LAB,
               )}
             />
           </group>
