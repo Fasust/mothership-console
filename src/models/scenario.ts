@@ -63,9 +63,9 @@ export const allScenarios = [
   gretaBase(),
   bellStation(),
   deepStation({ withAIcore: true }),
-  deepStation({ withAIcore: false }),
   prosperosDream(),
   rsvFidanza(),
+  deepStation({ withAIcore: false }),
 ];
 
 export type SystemLog = {
